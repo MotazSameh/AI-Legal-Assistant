@@ -18,9 +18,6 @@
       --border: #232840;
       --text: #dde1f0;
       --text-dim: #6b7194;
-      --ok: #4caf7d;
-      --missing: #d9534f;
-      --issue: #d9a441;
     }
 
     body {
@@ -174,12 +171,6 @@
       border-radius: 14px 14px 0 14px;
     }
 
-    .user.file-msg {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
     .bot {
       background: var(--surface2);
       color: var(--text);
@@ -239,71 +230,6 @@
       border-color: var(--gold);
     }
 
-    /* ─── Contract Report ─── */
-    .contract-report {
-      max-width: 72%;
-      align-self: flex-end;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 14px 14px 14px 0;
-      padding: 14px 18px;
-      font-size: 0.85rem;
-    }
-
-    .contract-report .cr-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-      color: var(--gold);
-      font-weight: 700;
-      font-size: 0.88rem;
-    }
-
-    .cr-summary {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .cr-pill {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .cr-pill.ok { background: rgba(76,175,125,0.15); color: var(--ok); }
-    .cr-pill.missing { background: rgba(217,83,79,0.15); color: var(--missing); }
-    .cr-pill.issue { background: rgba(217,164,65,0.15); color: var(--issue); }
-
-    .cr-clause {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 6px 0;
-      border-top: 1px solid var(--border);
-      line-height: 1.6;
-    }
-
-    .cr-clause:first-of-type { border-top: none; }
-
-    .cr-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-top: 6px;
-      flex-shrink: 0;
-    }
-
-    .cr-dot.ok { background: var(--ok); }
-    .cr-dot.missing { background: var(--missing); }
-    .cr-dot.issue { background: var(--issue); }
-
-    .cr-clause-text b { color: var(--text); }
-    .cr-clause-text span { color: var(--text-dim); font-size: 0.8rem; }
-
     /* ─── Input Area ─── */
     #input-area {
       background: var(--surface);
@@ -357,7 +283,7 @@
 
     #send-btn:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; }
 
-    #clear-btn, #upload-btn {
+    #clear-btn {
       background: transparent;
       color: var(--text-dim);
       border: 1px solid var(--border);
@@ -371,15 +297,7 @@
       white-space: nowrap;
     }
 
-    #clear-btn:hover, #upload-btn:hover { color: var(--gold); border-color: var(--gold); }
-
-    #upload-btn {
-      font-size: 1.1rem;
-      padding: 0 16px;
-      color: var(--gold);
-    }
-
-    #upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    #clear-btn:hover { color: var(--gold); border-color: var(--gold); }
 
     /* ─── Animations ─── */
     @keyframes fadeUp {
@@ -399,7 +317,7 @@
   <div class="logo">⚖️</div>
   <div>
     <h1>المساعد القانوني المصري</h1>
-    <p>مدعوم بالذكاء الاصطناعي — القانون المصري والعقود</p>
+    <p>مدعوم بالذكاء الاصطناعي — القانون المصري</p>
   </div>
   <div class="header-right"></div>
 </header>
@@ -408,7 +326,7 @@
   <div class="welcome" id="welcome">
     <span class="welcome-icon">⚖️</span>
     <h2>كيف يمكنني مساعدتك؟</h2>
-    <p>اسألني أي سؤال قانوني، أو ارفع عقد (PDF) وسأراجعه لك<br/>من نصوص القانون المصري مباشرةً</p>
+    <p>اسألني أي سؤال قانوني وسأجيبك<br/>من نصوص القانون المصري مباشرةً</p>
     <div class="suggestions">
       <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي عقوبة السرقة؟</button>
       <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي حقوق العامل؟</button>
@@ -420,13 +338,9 @@
 
 <div id="input-area">
   <button id="clear-btn" onclick="clearHistory()">🗑 محو</button>
-
-  <input type="file" id="file-input" accept="application/pdf" style="display:none" onchange="handleFileSelect(event)">
-  <button id="upload-btn" onclick="document.getElementById('file-input').click()" title="رفع عقد PDF">📎</button>
-
   <textarea
     id="user-input"
-    placeholder="اكتب سؤالك القانوني هنا، أو ارفع عقد لمراجعته..."
+    placeholder="اكتب سؤالك القانوني هنا..."
     rows="1"
     onkeydown="handleKey(event)"
     oninput="autoResize(this)"
@@ -437,12 +351,6 @@
 <script>
   const SESSION_ID = "session_" + Math.random().toString(36).substr(2, 9);
   const API_URL = "http://127.0.0.1:8000";
-
-  const CLAUSE_LABELS = {
-    ok: "سليم",
-    missing: "ناقص",
-    issue: "فيه مشكلة"
-  };
 
   function handleKey(e) {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -474,20 +382,7 @@
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  function appendUserFileMessage(filename) {
-    removeWelcome();
-    const chatBox = document.getElementById("chat-box");
-    const wrap = document.createElement("div");
-    wrap.className = "message-wrap user-wrap";
-    wrap.innerHTML = `
-      <span class="msg-label">أنت</span>
-      <div class="message user file-msg">📎 <span>${escapeHtml(filename)}</span></div>
-    `;
-    chatBox.appendChild(wrap);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  function appendLoading(text) {
+  function appendLoading() {
     const chatBox = document.getElementById("chat-box");
     const div = document.createElement("div");
     div.className = "loading";
@@ -496,7 +391,7 @@
       <div class="dots">
         <span></span><span></span><span></span>
       </div>
-      ${text || "جاري البحث في القانون المصري..."}
+      جاري البحث في القانون المصري...
     `;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -510,14 +405,11 @@
     wrap.className = "message-wrap bot-wrap";
 
     // الإجابة
-    const label = document.createElement("span");
-    label.className = "msg-label";
-    label.textContent = "المساعد القانوني";
-    wrap.appendChild(label);
-
     const msgDiv = document.createElement("div");
     msgDiv.className = "message bot";
     msgDiv.textContent = text;
+    wrap.appendChild(document.createElement("span")).className = "msg-label";
+    wrap.children[0].textContent = "المساعد القانوني";
     wrap.appendChild(msgDiv);
 
     // السورسز
@@ -549,59 +441,6 @@
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  function appendContractReport(answerText, validation) {
-    const chatBox = document.getElementById("chat-box");
-
-    const wrap = document.createElement("div");
-    wrap.className = "message-wrap bot-wrap";
-
-    const label = document.createElement("span");
-    label.className = "msg-label";
-    label.textContent = "مراجعة العقد";
-    wrap.appendChild(label);
-
-    // ملخص نصي طبيعي
-    const msgDiv = document.createElement("div");
-    msgDiv.className = "message bot";
-    msgDiv.textContent = answerText;
-    wrap.appendChild(msgDiv);
-
-    // تقرير تفصيلي لو موجود
-    if (validation && validation.clauses) {
-      const report = document.createElement("div");
-      report.className = "contract-report";
-
-      const summary = validation.summary || {};
-      report.innerHTML = `
-        <div class="cr-header">📋 تقرير مراجعة العقد (${validation.contract_type || ""})</div>
-        <div class="cr-summary">
-          <span class="cr-pill ok">${summary.ok || 0} سليم</span>
-          <span class="cr-pill missing">${summary.missing || 0} ناقص</span>
-          <span class="cr-pill issue">${summary.issue || 0} فيه مشكلة</span>
-        </div>
-      `;
-
-      const clausesWrap = document.createElement("div");
-      for (const clause of validation.clauses) {
-        const row = document.createElement("div");
-        row.className = "cr-clause";
-        row.innerHTML = `
-          <span class="cr-dot ${clause.status}"></span>
-          <span class="cr-clause-text">
-            <b>${escapeHtml(clause.title)}</b> — ${CLAUSE_LABELS[clause.status] || clause.status}
-            ${clause.reason ? `<br><span>${escapeHtml(clause.reason)}</span>` : ""}
-          </span>
-        `;
-        clausesWrap.appendChild(row);
-      }
-      report.appendChild(clausesWrap);
-      wrap.appendChild(report);
-    }
-
-    chatBox.appendChild(wrap);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
   async function sendMessage() {
     const input = document.getElementById("user-input");
     const btn   = document.getElementById("send-btn");
@@ -613,7 +452,7 @@
     btn.disabled = true;
 
     appendUserMessage(query);
-    appendLoading("جاري البحث في القانون المصري...");
+    appendLoading();
 
     try {
       const res = await fetch(`${API_URL}/chat`, {
@@ -624,8 +463,7 @@
 
       const data = await res.json();
       document.getElementById("loading-msg")?.remove();
-
-      renderResponse(data);
+      appendBotMessage(data.answer, data.sources);
 
     } catch (err) {
       document.getElementById("loading-msg")?.remove();
@@ -634,52 +472,6 @@
 
     btn.disabled = false;
     input.focus();
-  }
-
-  async function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    event.target.value = ""; // يسمح باختيار نفس الملف تاني لو حابب
-
-    const uploadBtn = document.getElementById("upload-btn");
-    uploadBtn.disabled = true;
-
-    appendUserFileMessage(file.name);
-    appendLoading("جاري تحليل العقد...");
-
-    const formData = new FormData();
-    formData.append("session_id", SESSION_ID);
-    formData.append("file", file);
-
-    try {
-      const res = await fetch(`${API_URL}/contract/upload`, {
-        method: "POST",
-        body: formData
-      });
-
-      const data = await res.json();
-      document.getElementById("loading-msg")?.remove();
-
-      renderResponse(data);
-
-    } catch (err) {
-      document.getElementById("loading-msg")?.remove();
-      appendBotMessage("❌ حدث خطأ في رفع أو تحليل العقد.", []);
-    }
-
-    uploadBtn.disabled = false;
-  }
-
-  function renderResponse(data) {
-    const flow = data.flow || "legal";
-
-    if (flow.startsWith("contract")) {
-      const validation = data.extra ? data.extra.validation : null;
-      appendContractReport(data.answer, validation);
-    } else {
-      appendBotMessage(data.answer, data.sources || []);
-    }
   }
 
   function askSuggestion(btn) {
@@ -694,7 +486,7 @@
       <div class="welcome" id="welcome">
         <span class="welcome-icon">⚖️</span>
         <h2>كيف يمكنني مساعدتك؟</h2>
-        <p>اسألني أي سؤال قانوني، أو ارفع عقد (PDF) وسأراجعه لك<br/>من نصوص القانون المصري مباشرةً</p>
+        <p>اسألني أي سؤال قانوني وسأجيبك<br/>من نصوص القانون المصري مباشرةً</p>
         <div class="suggestions">
           <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي عقوبة السرقة؟</button>
           <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي حقوق العامل؟</button>

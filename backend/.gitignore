@@ -1,0 +1,21 @@
+# Environment & secrets
+.env
+venv/
+*.pyc
+__pycache__/
+
+# Database (كبيرة الحجم ومش المفروض تتشارك، كل حد يبنيها عنده)
+chroma_db/
+backend/chroma_db/
+
+# Logs & temp files (بيانات مستخدمين حقيقية، ميتشاركش)
+logs/
+temp_uploads/
+
+# Data files الكبيرة (لو الـ PDFs الأصلية مش المفروض تتشارك بسبب حقوق أو حجم)
+# data/contracts/*.pdf   ← فعّلها لو حابب تستبعد الـ PDFs نفسها
+
+# OS/IDE files
+.vscode/
+.DS_Store
+Thumbs.db

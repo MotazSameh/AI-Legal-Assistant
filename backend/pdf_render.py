@@ -64,7 +64,7 @@ import os
 import unicodedata
 import json
 
-DATA_PATH = r"E:\3th_2\NLP\legal_ai_assistant\data"
+DATA_PATH = r"E:\3th_2\NLP\legal_ai_assistant\data\contracts"
 
 
 import re
@@ -72,22 +72,27 @@ import re
 import re
 import unicodedata
 
+def fix_reversed_arabic(text):
+    """يصلح انعكاس الحروف العربي اللي بيحصل مع بعض PDFs، سطر بسطر"""
+    def fix_line(line):
+        reversed_line = line[::-1]
+        def fix_digits(m):
+            return m.group(0)[::-1]
+        return re.sub(r'\d+', fix_digits, reversed_line)
+
+    lines = text.split("\n")
+    return "\n".join(fix_line(line) for line in lines)
+
+
 def clean_arabic_text(text):
-    # Unicode normalize
+    text = fix_reversed_arabic(text)          # ← الخطوة الجديدة، قبل أي تنضيف تاني
     text = unicodedata.normalize("NFKC", text)
-    # توحيد الألف
     text = re.sub(r"[إأآا]", "ا", text)
-    # توحيد الياء
     text = re.sub(r"ى", "ي", text)
-    # إزالة التشكيل
-    text = re.sub(r"[ًٌٍَُِّْـ]", "", text)
-    # إصلاح "مادة1149"
+    text = re.sub(r"[ًٌٍَُِّْـ]", "", text)
     text = re.sub(r"مادة(\d+)", r"مادة \1", text)
-    # إزالة الرموز الغريبة
     text = re.sub(r"[^\u0600-\u06FF0-9\s]", " ", text)
-    #خلّي الأرقام الإنجليزية والنقط والفواصل
     text = re.sub(r"[^\u0600-\u06FF0-9A-Za-z\s.,،():-]", " ", text)
-    # إزالة المسافات الزائدة
     text = " ".join(text.split())
     return text
 
