@@ -1,475 +1,957 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>المساعد القانوني المصري</title>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>المساعد القانوني المصري</title>
+<link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    :root {
-      --gold: #c9a84c;
-      --gold-light: #e0bc5a;
-      --gold-dim: rgba(201,168,76,0.15);
-      --bg: #0b0d14;
-      --surface: #12151f;
-      --surface2: #1a1e2e;
-      --border: #232840;
-      --text: #dde1f0;
-      --text-dim: #6b7194;
-      --ok: #4caf7d;
-      --missing: #d9534f;
-      --issue: #d9a441;
-    }
+  /* ============================================================
+     TOKENS — light (default) + dark (data-theme="dark" override)
+     Same "legal paper" identity in both modes: warm parchment /
+     emerald / gold / seal-red. Dark mode is a deep-ink ledger,
+     not a generic gray SaaS theme.
+  ============================================================ */
+  :root {
+    --paper: #f3ead6;
+    --paper-2: #ebdfc0;
+    --paper-3: #ddccA0;
+    --card: #faf5e7;
+    --ink: #24291f;
+    --ink-dim: #756f58;
+    --ink-faint: #a39c80;
+    --emerald: #1f5c46;
+    --emerald-deep: #143c2e;
+    --emerald-soft: rgba(31,92,70,0.10);
+    --seal-red: #8a3229;
+    --gold: #a3812f;
+    --ok: #2f6b45;
+    --missing: #9c3730;
+    --issue: #a3812f;
+    --shadow: rgba(36,41,31,0.14);
+    --overlay: rgba(20,23,17,0.55);
+  }
 
-    body {
-      font-family: 'Cairo', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
+  html[data-theme="dark"] {
+    --paper: #191d14;
+    --paper-2: #21261a;
+    --paper-3: #383f28;
+    --card: #232817;
+    --ink: #f0e9d2;
+    --ink-dim: #b7ae8d;
+    --ink-faint: #857c60;
+    --emerald: #4bb88a;
+    --emerald-deep: #327a5c;
+    --emerald-soft: rgba(75,184,138,0.14);
+    --seal-red: #d97b6c;
+    --gold: #d9b563;
+    --ok: #5cb98a;
+    --missing: #d97b6c;
+    --issue: #d9b563;
+    --shadow: rgba(0,0,0,0.45);
+    --overlay: rgba(5,6,4,0.65);
+  }
 
-    /* ─── Header ─── */
-    header {
-      background: var(--surface);
-      padding: 14px 28px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-shrink: 0;
-    }
+  html, body { height: 100%; }
 
-    .logo {
-      width: 38px;
-      height: 38px;
-      background: var(--gold-dim);
-      border: 1px solid var(--gold);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-    }
+  body {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    transition: background 0.25s ease, color 0.25s ease;
+  }
 
-    header h1 {
-      font-family: 'Amiri', serif;
-      font-size: 1.25rem;
-      color: var(--gold);
-      letter-spacing: 0.5px;
-    }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image: radial-gradient(rgba(36,41,31,0.035) 1px, transparent 1px);
+    background-size: 3px 3px;
+    z-index: 0;
+  }
 
-    header p {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      margin-top: 1px;
-    }
+  .mono { font-family: 'Space Mono', monospace; }
+  a { color: inherit; }
+  button { font-family: inherit; }
 
-    .header-right {
-      margin-right: auto;
-      margin-left: 0;
-    }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+  @keyframes bounce { 0%,80%,100% { transform: scale(0.6); opacity: .5;} 40% { transform: scale(1); opacity: 1;} }
+  @keyframes shimmer { 0% { background-position: -200% 0;} 100% { background-position: 200% 0;} }
+  @keyframes dash { to { stroke-dashoffset: -24; } }
+  @keyframes pulseDot { 0%,100% { opacity:.4; transform:scale(1);} 50% { opacity:1; transform:scale(1.3);} }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
 
-    /* ─── Chat Box ─── */
-    #chat-box {
-      flex: 1;
-      overflow-y: auto;
-      padding: 28px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      scroll-behavior: smooth;
-    }
+  [data-view] { display: none; }
+  [data-view].active { display: block; }
+  .hidden { display: none !important; }
 
-    #chat-box::-webkit-scrollbar { width: 4px; }
-    #chat-box::-webkit-scrollbar-track { background: transparent; }
-    #chat-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  /* ============================================================
+     TOP NAV (shared across all non-chat views)
+  ============================================================ */
+  .topnav {
+    position: sticky; top: 0; z-index: 40;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 32px;
+    background: rgba(243,234,214,0.88);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--paper-3);
+  }
+  html[data-theme="dark"] .topnav { background: rgba(25,29,20,0.88); }
 
-    /* ─── Welcome ─── */
-    .welcome {
-      margin: auto;
-      text-align: center;
-      padding: 40px 20px;
-      animation: fadeUp 0.6s ease;
-    }
+  .topnav-brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .topnav-brand svg { width: 26px; height: 26px; color: var(--emerald); }
+  .topnav-brand span {
+    font-family: 'Markazi Text', serif; font-weight: 700; font-size: 1.25rem; color: var(--emerald-deep);
+  }
+  .topnav-links { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .topnav-links button {
+    background: transparent; border: 1px solid transparent; color: var(--ink-dim);
+    padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: all .2s;
+  }
+  .topnav-links button:hover, .topnav-links button.active { background: var(--card); border-color: var(--paper-3); color: var(--emerald-deep); }
+  .theme-toggle {
+    width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--paper-3);
+    background: var(--card); cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+  }
+  .theme-toggle:hover { border-color: var(--emerald); }
 
-    .welcome-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-      display: block;
-    }
+  /* ============================================================
+     LANDING PAGE
+  ============================================================ */
+  #view-landing { position: relative; z-index: 1; }
 
-    .welcome h2 {
-      font-family: 'Amiri', serif;
-      font-size: 1.8rem;
-      color: var(--gold);
-      margin-bottom: 10px;
-    }
+  .hero {
+    position: relative;
+    padding: 90px 32px 70px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero-scales {
+    position: absolute; inset: 0; z-index: -1; opacity: 0.06; pointer-events: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-scales svg { width: 640px; height: 640px; color: var(--emerald-deep); }
+  .hero-eyebrow {
+    display: inline-block; font-size: 0.78rem; letter-spacing: 1px; color: var(--gold);
+    border: 1px dashed var(--paper-3); padding: 5px 14px; border-radius: 20px; margin-bottom: 22px;
+  }
+  .hero h1 {
+    font-family: 'Markazi Text', serif; font-weight: 700; color: var(--emerald-deep);
+    font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.15; margin-bottom: 14px;
+    animation: fadeUp .6s ease;
+  }
+  .hero .subtitle { font-size: 1.15rem; color: var(--emerald); font-weight: 600; margin-bottom: 18px; }
+  .hero p.desc {
+    max-width: 620px; margin: 0 auto 34px; color: var(--ink-dim); line-height: 1.9; font-size: 0.98rem;
+  }
+  .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    padding: 13px 28px; border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer;
+    border: 1px solid transparent; transition: transform .15s, box-shadow .15s, background .2s; position: relative; overflow: hidden;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--emerald-deep); color: var(--paper); }
+  .btn-primary:hover { background: var(--emerald); box-shadow: 0 10px 24px var(--shadow); }
+  .btn-outline { background: transparent; border-color: var(--emerald); color: var(--emerald-deep); }
+  .btn-outline:hover { background: var(--emerald-soft); }
+  .btn .ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.4); transform: scale(0); animation: rippleAnim .5s ease-out; pointer-events:none; }
+  @keyframes rippleAnim { to { transform: scale(3); opacity: 0; } }
 
-    .welcome p {
-      color: var(--text-dim);
-      font-size: 0.9rem;
-      line-height: 1.7;
-    }
+  section.landing-section { padding: 60px 32px; max-width: 1080px; margin: 0 auto; }
+  .section-head { text-align: center; margin-bottom: 40px; }
+  .section-head h2 {
+    font-family: 'Markazi Text', serif; font-weight: 700; font-size: 2rem; color: var(--emerald-deep); margin-bottom: 8px;
+  }
+  .section-head p { color: var(--ink-dim); font-size: 0.92rem; }
 
-    .suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 24px;
-    }
+  /* stats */
+  .stats-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+    background: var(--paper-2); border: 1px solid var(--paper-3); border-radius: 16px; padding: 32px 20px;
+  }
+  .stat-box { text-align: center; }
+  .stat-num {
+    font-family: 'Space Mono', monospace; font-weight: 700; font-size: 1.9rem; color: var(--emerald-deep);
+    display: block;
+  }
+  .stat-label { font-size: 0.78rem; color: var(--ink-dim); margin-top: 4px; }
 
-    .suggestion-btn {
-      background: var(--gold-dim);
-      border: 1px solid rgba(201,168,76,0.3);
-      color: var(--gold);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.82rem;
-      cursor: pointer;
-      font-family: 'Cairo', sans-serif;
-      transition: all 0.2s;
-    }
+  /* features */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .feature-card {
+    background: var(--card); border: 1px solid var(--paper-3); border-radius: 14px; padding: 24px;
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px var(--shadow); border-color: var(--emerald); }
+  .feature-icon {
+    width: 44px; height: 44px; border-radius: 10px; background: var(--emerald-soft); color: var(--emerald-deep);
+    display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 14px;
+  }
+  .feature-card h3 { font-size: 1rem; margin-bottom: 6px; color: var(--ink); }
+  .feature-card p { font-size: 0.84rem; color: var(--ink-dim); line-height: 1.7; }
 
-    .suggestion-btn:hover {
-      background: rgba(201,168,76,0.25);
-      border-color: var(--gold);
-    }
+  /* timeline */
+  .timeline { display: flex; flex-direction: column; gap: 0; max-width: 460px; margin: 0 auto; }
+  .timeline-step {
+    display: flex; align-items: center; gap: 16px; padding: 14px 0; position: relative;
+  }
+  .timeline-step .tdot {
+    width: 14px; height: 14px; border-radius: 50%; background: var(--emerald); flex-shrink: 0; position: relative; z-index: 1;
+    box-shadow: 0 0 0 4px var(--emerald-soft);
+  }
+  .timeline-step:not(:last-child)::before {
+    content: ""; position: absolute; right: 6px; top: 24px; width: 2px; height: calc(100% + 4px);
+    background: repeating-linear-gradient(to bottom, var(--paper-3) 0 6px, transparent 6px 12px);
+  }
+  .timeline-step .tlabel { font-size: 0.92rem; color: var(--ink); font-weight: 600; }
 
-    /* ─── Messages ─── */
-    .message-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      animation: fadeUp 0.3s ease;
-    }
+  /* static architecture (landing preview) */
+  .arch-static {
+    display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;
+    background: var(--paper-2); border: 1px solid var(--paper-3); border-radius: 16px; padding: 30px 20px;
+  }
+  .arch-node-mini {
+    background: var(--card); border: 1px solid var(--paper-3); border-radius: 10px; padding: 10px 16px;
+    font-size: 0.8rem; font-weight: 600; color: var(--emerald-deep);
+  }
+  .arch-arrow-mini { color: var(--ink-faint); font-size: 1.1rem; }
+  .arch-open-btn {
+    display: block; margin: 18px auto 0; background: transparent; border: 1px dashed var(--gold); color: var(--gold);
+    padding: 8px 18px; border-radius: 20px; font-size: 0.8rem; cursor: pointer;
+  }
 
-    .message-wrap.user-wrap { align-items: flex-start; }
-    .message-wrap.bot-wrap  { align-items: flex-end; }
+  /* tech stack */
+  .tech-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .tech-chip {
+    background: var(--card); border: 1px solid var(--paper-3); border-radius: 20px; padding: 8px 16px;
+    font-size: 0.8rem; color: var(--ink); display: flex; align-items: center; gap: 6px;
+  }
 
-    .msg-label {
-      font-size: 0.72rem;
-      color: var(--text-dim);
-      padding: 0 4px;
-    }
+  /* demo workflows */
+  .workflows-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .workflow-card { background: var(--card); border: 1px solid var(--paper-3); border-radius: 14px; padding: 22px; }
+  .workflow-card .wf-num { font-family:'Space Mono',monospace; color: var(--gold); font-size: 0.78rem; }
+  .workflow-card h3 { font-family:'Markazi Text',serif; font-size: 1.3rem; color: var(--emerald-deep); margin: 6px 0 8px; }
+  .workflow-card p { font-size: 0.85rem; color: var(--ink-dim); line-height: 1.7; }
 
-    .message {
-      max-width: 72%;
-      padding: 13px 18px;
-      border-radius: 14px;
-      line-height: 1.8;
-      font-size: 0.92rem;
-      white-space: pre-wrap;
-    }
+  /* about */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .about-item { background: var(--card); border: 1px solid var(--paper-3); border-radius: 12px; padding: 18px 20px; }
+  .about-item h4 { font-size: 0.85rem; color: var(--gold); margin-bottom: 6px; }
+  .about-item p { font-size: 0.84rem; color: var(--ink-dim); line-height: 1.75; }
+  .about-disclaimer {
+    margin-top: 18px; text-align: center; font-size: 0.8rem; color: var(--seal-red);
+    border: 1px dashed var(--seal-red); border-radius: 10px; padding: 12px 16px;
+  }
 
-    .user {
-      background: var(--gold);
-      color: #0b0d14;
-      font-weight: 600;
-      border-radius: 14px 14px 0 14px;
-    }
+  /* footer */
+  footer.site-footer {
+    border-top: 1px solid var(--paper-3); padding: 34px 32px; text-align: center; color: var(--ink-dim); font-size: 0.82rem;
+  }
+  .footer-links { display: flex; gap: 18px; justify-content: center; margin: 12px 0; flex-wrap: wrap; }
+  .footer-links a { text-decoration: none; color: var(--emerald-deep); font-size: 0.82rem; }
+  .footer-links a:hover { text-decoration: underline; }
 
-    .user.file-msg {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+  @media (max-width: 780px) {
+    .stats-strip { grid-template-columns: repeat(2,1fr); }
+    .features-grid { grid-template-columns: 1fr; }
+    .about-grid, .workflows-grid { grid-template-columns: 1fr; }
+    .topnav { padding: 12px 16px; }
+    .topnav-links { display: none; }
+  }
 
-    .bot {
-      background: var(--surface2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 14px 14px 14px 0;
-    }
+  /* ============================================================
+     CHAT APP SHELL
+  ============================================================ */
+  #view-app { height: calc(100vh - 60px); }
+  .app-shell { position: relative; z-index: 1; height: 100%; display: flex; }
 
-    .loading {
-      background: var(--surface2);
-      color: var(--text-dim);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 13px 18px;
-      font-size: 0.88rem;
-      font-style: italic;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+  .sidebar {
+    width: 280px; flex-shrink: 0; background: var(--paper-2); border-left: 1px solid var(--paper-3);
+    display: flex; flex-direction: column; padding: 24px 22px; overflow-y: auto;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--paper-3); border-radius: 4px; }
 
-    .dots span {
-      display: inline-block;
-      width: 6px; height: 6px;
-      background: var(--gold);
-      border-radius: 50%;
-      animation: bounce 1.2s infinite;
-    }
-    .dots span:nth-child(2) { animation-delay: 0.2s; }
-    .dots span:nth-child(3) { animation-delay: 0.4s; }
+  .brand { text-align: center; padding-bottom: 18px; border-bottom: 1px dashed var(--paper-3); margin-bottom: 18px; }
+  .seal-mark { width: 50px; height: 50px; color: var(--emerald); margin: 0 auto 10px; display: block; }
+  .brand h1 { font-family: 'Markazi Text', serif; font-weight: 700; font-size: 1.4rem; color: var(--emerald-deep); line-height: 1.3; }
+  .brand-sub { font-size: 0.72rem; color: var(--ink-dim); margin-top: 6px; line-height: 1.6; }
 
-    /* ─── Sources ─── */
-    .sources-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-self: flex-end;
-      margin-top: -4px;
-    }
+  .sidebar-section { margin-bottom: 20px; }
+  .sidebar-section h4 {
+    font-size: 0.68rem; color: var(--gold); letter-spacing: 0.5px; font-weight: 700; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sidebar-section h4::after { content: ""; flex: 1; height: 1px; background: var(--paper-3); }
+  .about-brief { font-size: 0.78rem; color: var(--ink-dim); line-height: 1.8; }
 
-    .source-btn {
-      background: transparent;
-      border: 1px solid rgba(201,168,76,0.4);
-      color: var(--gold);
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-size: 0.78rem;
-      cursor: pointer;
-      font-family: 'Cairo', sans-serif;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+  .service-row {
+    display: flex; align-items: flex-start; gap: 9px; font-size: 0.78rem; color: var(--ink);
+    line-height: 1.65; padding: 8px 0; border-top: 1px solid var(--paper-3);
+  }
+  .service-row:first-of-type { border-top: none; }
+  .service-icon {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--card);
+    border: 1px solid var(--paper-3); display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+  }
 
-    .source-btn:hover {
-      background: var(--gold-dim);
-      border-color: var(--gold);
-    }
+  .link-btn {
+    width: 100%; background: transparent; border: 1px solid var(--emerald); color: var(--emerald-deep);
+    padding: 9px 14px; border-radius: 8px; font-size: 0.76rem; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; margin-bottom: 10px;
+  }
+  .link-btn:hover { background: var(--emerald); color: var(--paper); }
 
-    /* ─── Contract Report ─── */
-    .contract-report {
-      max-width: 72%;
-      align-self: flex-end;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 14px 14px 14px 0;
-      padding: 14px 18px;
-      font-size: 0.85rem;
-    }
+  .sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px dashed var(--paper-3); display: flex; flex-direction: column; gap: 9px; }
+  .badge-live { display: flex; align-items: center; gap: 7px; font-size: 0.7rem; color: var(--ink-dim); }
+  .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px var(--emerald-soft); animation: pulseDot 2s infinite; }
 
-    .contract-report .cr-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-      color: var(--gold);
-      font-weight: 700;
-      font-size: 0.88rem;
-    }
+  #clear-btn {
+    background: transparent; border: 1px solid var(--paper-3); color: var(--ink-dim); padding: 9px 14px;
+    border-radius: 8px; font-size: 0.76rem; cursor: pointer; transition: all 0.2s;
+  }
+  #clear-btn:hover { color: var(--seal-red); border-color: var(--seal-red); }
 
-    .cr-summary {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
+  .chat-shell { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .chat-topbar {
+    display: none; align-items: center; justify-content: space-between; padding: 10px 16px;
+    background: var(--paper-2); border-bottom: 1px solid var(--paper-3); flex-shrink: 0;
+  }
+  .sidebar-toggle {
+    background: transparent; border: 1px solid var(--paper-3); color: var(--emerald-deep);
+    width: 36px; height: 36px; border-radius: 8px; font-size: 1rem; cursor: pointer;
+  }
 
-    .cr-pill {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
+  #chat-box { flex: 1; overflow-y: auto; padding: 28px 30px; display: flex; flex-direction: column; gap: 18px; scroll-behavior: smooth; }
+  #chat-box::-webkit-scrollbar { width: 5px; }
+  #chat-box::-webkit-scrollbar-thumb { background: var(--paper-3); border-radius: 4px; }
 
-    .cr-pill.ok { background: rgba(76,175,125,0.15); color: var(--ok); }
-    .cr-pill.missing { background: rgba(217,83,79,0.15); color: var(--missing); }
-    .cr-pill.issue { background: rgba(217,164,65,0.15); color: var(--issue); }
+  .welcome { margin: auto; text-align: center; padding: 30px 20px; max-width: 480px; animation: fadeUp 0.6s ease; }
+  .welcome-icon { font-size: 2.4rem; margin-bottom: 12px; display: block; color: var(--emerald); }
+  .welcome h2 { font-family: 'Markazi Text', serif; font-weight: 700; font-size: 1.7rem; color: var(--emerald-deep); margin-bottom: 8px; }
+  .welcome p { color: var(--ink-dim); font-size: 0.88rem; line-height: 1.8; }
+  .suggestions { display: flex; flex-wrap: wrap; gap: 9px; justify-content: center; margin-top: 20px; }
+  .suggestion-btn {
+    background: var(--card); border: 1px solid var(--paper-3); color: var(--emerald-deep); padding: 7px 15px;
+    border-radius: 8px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s;
+  }
+  .suggestion-btn:hover { background: var(--emerald); color: var(--paper); border-color: var(--emerald); }
 
-    .cr-clause {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 6px 0;
-      border-top: 1px solid var(--border);
-      line-height: 1.6;
-    }
+  .message-wrap { display: flex; flex-direction: column; gap: 6px; animation: fadeUp 0.3s ease; }
+  .message-wrap.user-wrap { align-items: flex-start; }
+  .message-wrap.bot-wrap { align-items: flex-end; }
+  .msg-label { font-size: 0.7rem; color: var(--ink-faint); padding: 0 4px; font-weight: 600; }
+  .message {
+    max-width: 72%; padding: 13px 18px; border-radius: 4px 14px 14px 14px; line-height: 1.85; font-size: 0.9rem;
+    box-shadow: 0 2px 6px var(--shadow);
+  }
+  .message p { margin: 0 0 8px; }
+  .message p:last-child { margin-bottom: 0; }
+  .message ul, .message ol { margin: 0 0 8px 0; padding-inline-start: 20px; }
+  .message code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 0.82em; }
+  .message pre { background: rgba(0,0,0,0.08); padding: 10px 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; }
+  .message pre code { background: none; padding: 0; }
+  .message table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 0.82rem; }
+  .message th, .message td { border: 1px solid var(--paper-3); padding: 6px 10px; text-align: right; }
+  .message th { background: rgba(0,0,0,0.05); }
 
-    .cr-clause:first-of-type { border-top: none; }
+  .user { background: var(--emerald-deep); color: var(--paper); border-radius: 14px 4px 14px 14px; white-space: pre-wrap; }
+  .user.file-msg { display: flex; align-items: center; gap: 8px; }
+  .bot { background: var(--card); color: var(--ink); border: 1px solid var(--paper-3); position: relative; }
 
-    .cr-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-top: 6px;
-      flex-shrink: 0;
-    }
+  .copy-btn {
+    align-self: flex-end; background: transparent; border: 1px solid var(--paper-3); color: var(--ink-faint);
+    font-size: 0.7rem; padding: 3px 10px; border-radius: 12px; cursor: pointer; margin-top: -2px; transition: all .2s;
+  }
+  .copy-btn:hover { color: var(--emerald-deep); border-color: var(--emerald); }
 
-    .cr-dot.ok { background: var(--ok); }
-    .cr-dot.missing { background: var(--missing); }
-    .cr-dot.issue { background: var(--issue); }
+  .loading {
+    background: var(--card); color: var(--ink-dim); border: 1px solid var(--paper-3); border-radius: 14px;
+    padding: 12px 18px; font-size: 0.85rem; display: flex; flex-direction: column; gap: 4px; align-self: flex-end; min-width: 230px;
+  }
+  .loading-title { display: flex; align-items: center; gap: 10px; font-style: italic; }
+  .dots span { display: inline-block; width: 6px; height: 6px; background: var(--emerald); border-radius: 50%; animation: bounce 1.2s infinite; }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+  .progress-steps { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+  .progress-step { font-size: 0.74rem; color: var(--ink-faint); display: flex; align-items: center; gap: 6px; }
+  .progress-step.done { color: var(--ok); }
+  .progress-step.active { color: var(--emerald-deep); font-weight: 600; }
+  .progress-step .pstep-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--paper-3); flex-shrink:0; }
+  .progress-step.done .pstep-dot { background: var(--ok); }
+  .progress-step.active .pstep-dot { background: var(--emerald); animation: pulseDot 1s infinite; }
 
-    .cr-clause-text b { color: var(--text); }
-    .cr-clause-text span { color: var(--text-dim); font-size: 0.8rem; }
+  .sources-row { display: flex; flex-wrap: wrap; gap: 8px; align-self: flex-end; margin-top: -4px; max-width: 72%; justify-content: flex-end; }
+  .source-card {
+    background: var(--card); border: 1px solid var(--paper-3); border-radius: 10px; padding: 8px 12px;
+    font-size: 0.76rem; display: flex; align-items: center; gap: 10px; transition: all .2s;
+  }
+  .source-card:hover { border-color: var(--emerald); box-shadow: 0 4px 12px var(--shadow); }
+  .source-card .sc-info { display: flex; flex-direction: column; gap: 1px; }
+  .source-card .sc-name { color: var(--ink); font-weight: 600; }
+  .source-card .sc-page { color: var(--ink-faint); font-size: 0.7rem; }
+  .source-card button {
+    background: transparent; border: 1px solid var(--emerald); color: var(--emerald-deep); border-radius: 6px;
+    padding: 4px 10px; font-size: 0.7rem; cursor: pointer;
+  }
+  .source-card button:hover { background: var(--emerald); color: var(--paper); }
 
-    /* ─── Input Area ─── */
-    #input-area {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      padding: 16px 24px;
-      display: flex;
-      gap: 10px;
-      align-items: flex-end;
-      flex-shrink: 0;
-    }
+  .contract-report {
+    max-width: 78%; align-self: flex-end; background: var(--card); border: 1px solid var(--paper-3);
+    border-radius: 4px 14px 14px 14px; padding: 16px 20px; font-size: 0.85rem;
+  }
+  .contract-report .cr-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 12px; color: var(--emerald-deep);
+    font-weight: 700; font-size: 0.9rem; font-family: 'Markazi Text', serif;
+  }
+  .cr-summary { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .cr-pill { padding: 4px 13px; border-radius: 3px; font-size: 0.72rem; font-weight: 700; border: 1.5px double; transform: rotate(-1deg); }
+  .cr-pill.ok { color: var(--ok); border-color: var(--ok); background: rgba(47,107,69,0.08); }
+  .cr-pill.missing { color: var(--missing); border-color: var(--missing); background: rgba(156,55,48,0.08); }
+  .cr-pill.issue { color: var(--issue); border-color: var(--issue); background: rgba(163,129,47,0.08); }
+  .cr-clause { display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-top: 1px solid var(--paper-3); line-height: 1.65; }
+  .cr-clause:first-of-type { border-top: none; }
+  .cr-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .cr-dot.ok { background: var(--ok); } .cr-dot.missing { background: var(--missing); } .cr-dot.issue { background: var(--issue); }
+  .cr-clause-text b { color: var(--ink); }
+  .cr-clause-text span { color: var(--ink-dim); font-size: 0.8rem; }
 
-    #user-input {
-      flex: 1;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 18px;
-      color: var(--text);
-      font-size: 0.92rem;
-      font-family: 'Cairo', sans-serif;
-      resize: none;
-      min-height: 48px;
-      max-height: 140px;
-      outline: none;
-      transition: border 0.2s;
-      line-height: 1.6;
-    }
+  #input-area { background: var(--paper-2); border-top: 1px solid var(--paper-3); padding: 16px 26px; display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0; }
+  #user-input {
+    flex: 1; background: var(--card); border: 1px solid var(--paper-3); border-radius: 10px; padding: 12px 18px;
+    color: var(--ink); font-size: 0.9rem; font-family: inherit; resize: none; min-height: 46px; max-height: 140px;
+    outline: none; transition: border 0.2s; line-height: 1.6;
+  }
+  #user-input:focus { border-color: var(--emerald); }
+  #send-btn {
+    background: var(--emerald-deep); color: var(--paper); border: none; border-radius: 10px; padding: 0 22px;
+    font-size: 0.92rem; font-weight: 700; cursor: pointer; height: 46px; transition: background 0.2s, transform 0.1s; white-space: nowrap;
+  }
+  #send-btn:hover:not(:disabled) { background: var(--emerald); transform: translateY(-1px); }
+  #send-btn:disabled { background: #bcb59e; color: #8f8a76; cursor: not-allowed; transform: none; }
+  #upload-btn {
+    background: var(--card); color: var(--emerald-deep); border: 1px solid var(--paper-3); border-radius: 10px;
+    padding: 0 15px; font-size: 1.05rem; cursor: pointer; height: 46px; transition: all 0.2s;
+  }
+  #upload-btn:hover { border-color: var(--emerald); }
+  #upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    #user-input:focus { border-color: var(--gold); }
-    #user-input::placeholder { color: var(--text-dim); }
+  @media (max-width: 900px) {
+    .sidebar { position: fixed; inset: 0 20% 0 0; z-index: 60; transform: translateX(100%); transition: transform .25s; }
+    .sidebar.open { transform: translateX(0); box-shadow: 0 0 40px var(--shadow); }
+    .sidebar-backdrop { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 55; }
+    .sidebar-backdrop.open { display: block; }
+    .chat-topbar { display: flex; }
+    #chat-box { padding: 20px 16px; }
+    .message, .sources-row, .contract-report { max-width: 92%; }
+    #input-area { padding: 12px 14px; }
+  }
 
-    #send-btn {
-      background: var(--gold);
-      color: #0b0d14;
-      border: none;
-      border-radius: 12px;
-      padding: 0 20px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      height: 48px;
-      font-family: 'Cairo', sans-serif;
-      transition: background 0.2s, transform 0.1s;
-      white-space: nowrap;
-    }
+  /* ============================================================
+     MODALS (About / Architecture)
+  ============================================================ */
+  .overlay { position: fixed; inset: 0; background: var(--overlay); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 100; padding: 24px; }
+  .overlay.open { display: flex; animation: fadeUp 0.25s ease; }
+  .modal-card {
+    background: var(--paper); border: 1px solid var(--paper-3); border-radius: 14px; max-width: 760px; width: 100%;
+    max-height: 86vh; overflow-y: auto; padding: 30px 34px; position: relative; box-shadow: 0 24px 70px var(--shadow);
+  }
+  .modal-card::-webkit-scrollbar { width: 5px; }
+  .modal-card::-webkit-scrollbar-thumb { background: var(--paper-3); border-radius: 4px; }
+  .modal-close {
+    position: absolute; top: 16px; left: 16px; background: var(--card); border: 1px solid var(--paper-3); color: var(--ink-dim);
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;
+  }
+  .modal-close:hover { color: var(--seal-red); border-color: var(--seal-red); }
+  .modal-card h2 { font-family: 'Markazi Text', serif; color: var(--emerald-deep); font-size: 1.6rem; margin-bottom: 16px; }
 
-    #send-btn:hover:not(:disabled) {
-      background: var(--gold-light);
-      transform: translateY(-1px);
-    }
+  /* interactive architecture diagram */
+  .arch-diagram { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .arch-node {
+    width: 100%; max-width: 340px; background: var(--card); border: 1.5px solid var(--paper-3); border-radius: 12px;
+    padding: 12px 20px; text-align: center; font-weight: 700; color: var(--emerald-deep); cursor: pointer;
+    transition: all .2s; position: relative; z-index: 2;
+  }
+  .arch-node:hover, .arch-node.active { border-color: var(--emerald); background: var(--emerald-soft); transform: scale(1.03); }
+  .arch-connector { width: 2px; height: 26px; position: relative; }
+  .arch-connector svg { position: absolute; right: -1px; top: 0; }
+  .arch-desc {
+    margin-top: 16px; background: var(--paper-2); border: 1px dashed var(--paper-3); border-radius: 10px;
+    padding: 14px 18px; font-size: 0.85rem; color: var(--ink-dim); line-height: 1.8; min-height: 60px; width: 100%; max-width: 500px;
+  }
 
-    #send-btn:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; }
+  /* ============================================================
+     DASHBOARD
+  ============================================================ */
+  .dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 24px; }
+  .dash-card { background: var(--card); border: 1px solid var(--paper-3); border-radius: 14px; padding: 22px; text-align: center; }
+  .dash-card .dnum { font-family: 'Space Mono', monospace; font-size: 2.2rem; font-weight: 700; color: var(--emerald-deep); }
+  .dash-card .dlabel { font-size: 0.8rem; color: var(--ink-dim); margin-top: 6px; }
+  .dash-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .dash-panel { background: var(--card); border: 1px solid var(--paper-3); border-radius: 14px; padding: 22px; }
+  .dash-panel h3 { font-family:'Markazi Text', serif; font-size: 1.1rem; color: var(--emerald-deep); margin-bottom: 14px; }
+  .donut-wrap { display: flex; align-items: center; gap: 20px; justify-content: center; }
+  .donut { width: 130px; height: 130px; border-radius: 50%; flex-shrink: 0; }
+  .donut-legend { display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem; }
+  .donut-legend span.sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-inline-end: 6px; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.8rem; }
+  .bar-row .bar-label { width: 90px; color: var(--ink-dim); flex-shrink: 0; }
+  .bar-track { flex: 1; height: 10px; background: var(--paper-2); border-radius: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--emerald); border-radius: 6px; transition: width .5s ease; }
+  .dash-note { text-align: center; font-size: 0.76rem; color: var(--ink-faint); margin-top: 16px; }
+  @media (max-width: 780px) { .dash-grid, .dash-panels { grid-template-columns: 1fr; } }
 
-    #clear-btn, #upload-btn {
-      background: transparent;
-      color: var(--text-dim);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0 14px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      height: 48px;
-      font-family: 'Cairo', sans-serif;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-
-    #clear-btn:hover, #upload-btn:hover { color: var(--gold); border-color: var(--gold); }
-
-    #upload-btn {
-      font-size: 1.1rem;
-      padding: 0 16px;
-      color: var(--gold);
-    }
-
-    #upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* ─── Animations ─── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes bounce {
-      0%, 80%, 100% { transform: translateY(0); }
-      40%           { transform: translateY(-6px); }
-    }
-  </style>
+  /* ============================================================
+     CONTRACT COMPARISON
+  ============================================================ */
+  .compare-upload-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 26px; }
+  .compare-slot {
+    border: 2px dashed var(--paper-3); border-radius: 14px; padding: 26px; text-align: center; cursor: pointer;
+    background: var(--card); transition: all .2s;
+  }
+  .compare-slot:hover { border-color: var(--emerald); }
+  .compare-slot.filled { border-style: solid; border-color: var(--ok); }
+  .compare-slot .slot-icon { font-size: 1.8rem; margin-bottom: 8px; display:block; }
+  .compare-slot .slot-name { font-size: 0.82rem; color: var(--ink-dim); word-break: break-all; }
+  .compare-results { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .compare-col .contract-report { max-width: 100%; align-self: stretch; }
+  @media (max-width: 780px) { .compare-upload-row, .compare-results { grid-template-columns: 1fr; } }
+</style>
 </head>
 <body>
 
-<header>
-  <div class="logo">⚖️</div>
-  <div>
-    <h1>المساعد القانوني المصري</h1>
-    <p>مدعوم بالذكاء الاصطناعي — القانون المصري والعقود</p>
+<!-- ============================================================
+     SHARED TOP NAV
+============================================================ -->
+<nav class="topnav">
+  <div class="topnav-brand" onclick="showView('landing')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 3 6v2h18V6l-9-4Z"/><path d="M5 10v8M9 10v8M15 10v8M19 10v8"/><path d="M3 21h18"/></svg>
+    <span>المساعد القانوني المصري</span>
   </div>
-  <div class="header-right"></div>
-</header>
+  <div class="topnav-links">
+    <button onclick="showView('landing')" data-nav="landing">الرئيسية</button>
+    <button onclick="showView('app')" data-nav="app">المساعد</button>
+    <button onclick="showView('dashboard')" data-nav="dashboard">لوحة الإحصائيات</button>
+    <button onclick="showView('compare')" data-nav="compare">مقارنة العقود</button>
+    <button onclick="openArchModal()">الهيكل التقني</button>
+    <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="الوضع الليلي">🌙</button>
+  </div>
+</nav>
 
-<div id="chat-box">
-  <div class="welcome" id="welcome">
-    <span class="welcome-icon">⚖️</span>
-    <h2>كيف يمكنني مساعدتك؟</h2>
-    <p>اسألني أي سؤال قانوني، أو ارفع عقد (PDF) وسأراجعه لك<br/>من نصوص القانون المصري مباشرةً</p>
-    <div class="suggestions">
-      <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي عقوبة السرقة؟</button>
-      <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي حقوق العامل؟</button>
-      <button class="suggestion-btn" onclick="askSuggestion(this)">شروط عقد الإيجار</button>
-      <button class="suggestion-btn" onclick="askSuggestion(this)">عقوبة القتل العمد</button>
+<!-- ============================================================
+     LANDING PAGE
+============================================================ -->
+<div data-view="landing" class="active" id="view-landing">
+
+  <section class="hero">
+    <div class="hero-scales">
+      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M50 10v55M20 25h60M20 25 10 50h20L20 25ZM80 25 70 50h20L80 25Z"/>
+        <circle cx="20" cy="50" r="0" /><circle cx="80" cy="50" r="0"/>
+        <path d="M50 65a12 5 0 0 0 24 0M50 65a-12 5 0 0 1 -24 0"/>
+        <rect x="35" y="85" width="30" height="6" rx="1"/>
+      </svg>
+    </div>
+    <span class="hero-eyebrow">مشروع تخرج · Legal AI</span>
+    <h1>المساعد القانوني المصري</h1>
+    <div class="subtitle">افهم القانون المصري باستخدام الذكاء الاصطناعي</div>
+    <p class="desc">
+      اسأل أي سؤال قانوني، وارفع عقودك كملفات PDF ليتم تحليلها آليًا،
+      واكتشف البنود الناقصة أو التي تحتاج مراجعة، واحصل على إجابات مدعّمة
+      بمصادر رسمية من نصوص القانون — كل ذلك في مكان واحد.
+    </p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="rippleAndGo(event,'app')">جرّب المساعد الآن</button>
+      <button class="btn btn-outline" onclick="rippleAndGo(event,'app')">ارفع عقد للمراجعة</button>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="stats-strip">
+      <div class="stat-box"><span class="stat-num" data-count="1200">0</span><div class="stat-label">مادة قانونية مفهرسة</div></div>
+      <div class="stat-box"><span class="stat-num" data-count="3">0</span><div class="stat-label">أنواع عقود مدعومة</div></div>
+      <div class="stat-box"><span class="stat-num mono">Hybrid</span><div class="stat-label">بحث هجين (BM25 + Dense)</div></div>
+      <div class="stat-box"><span class="stat-num mono">LLM</span><div class="stat-label">مدعوم بنموذج لغوي</div></div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="section-head"><h2>الخدمات</h2><p>كل اللي محتاجه من مساعد قانوني في واجهة واحدة</p></div>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">⚖️</div><h3>الإجابة على الأسئلة القانونية</h3><p>اسأل بلغتك العادية واحصل على إجابة مبنية على نصوص القانون المصري مباشرة.</p></div>
+      <div class="feature-card"><div class="feature-icon">📄</div><h3>تحليل العقود</h3><p>ارفع عقدك كملف PDF وخلي النظام يقرأه ويحدد نوعه ويحلل بنوده.</p></div>
+      <div class="feature-card"><div class="feature-icon">✅</div><h3>التحقق من البنود</h3><p>اكتشف البنود المكتملة، والناقصة، وتلك التي فيها مشكلة تحتاج انتباه.</p></div>
+      <div class="feature-card"><div class="feature-icon">📖</div><h3>الاستشهاد بالمصادر</h3><p>كل إجابة قانونية مربوطة بالمصدر والصفحة، وتقدر تفتح الـ PDF مباشرة.</p></div>
+      <div class="feature-card"><div class="feature-icon">💬</div><h3>أسئلة المتابعة</h3><p>اسأل عن نفس العقد أو الموضوع أكتر من مرة والنظام هيفهم السياق.</p></div>
+      <div class="feature-card"><div class="feature-icon">🧠</div><h3>ذاكرة المحادثة</h3><p>المحادثة بتفضل محفوظة طول الجلسة، تقدر تمسحها في أي وقت.</p></div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="section-head"><h2>ازاي بيشتغل</h2><p>رحلة السؤال من لحظة كتابته لحد الإجابة</p></div>
+    <div class="timeline">
+      <div class="timeline-step"><div class="tdot"></div><div class="tlabel">أنت (سؤال أو رفع PDF)</div></div>
+      <div class="timeline-step"><div class="tdot"></div><div class="tlabel">موجّه النية (Intent Router)</div></div>
+      <div class="timeline-step"><div class="tdot"></div><div class="tlabel">مسار القانون أو مسار العقود</div></div>
+      <div class="timeline-step"><div class="tdot"></div><div class="tlabel">نموذج اللغة (LLM)</div></div>
+      <div class="timeline-step"><div class="tdot"></div><div class="tlabel">الإجابة النهائية</div></div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="section-head"><h2>لمحة عن البنية التقنية</h2><p>اضغط "استكشف الهيكل الكامل" لعرض تفاعلي بالتفصيل</p></div>
+    <div class="arch-static">
+      <div class="arch-node-mini">المستخدم</div><div class="arch-arrow-mini">←</div>
+      <div class="arch-node-mini">الواجهة الأمامية</div><div class="arch-arrow-mini">←</div>
+      <div class="arch-node-mini">FastAPI</div><div class="arch-arrow-mini">←</div>
+      <div class="arch-node-mini">Intent Router</div><div class="arch-arrow-mini">←</div>
+      <div class="arch-node-mini">Legal RAG</div><div class="arch-arrow-mini">←</div>
+      <div class="arch-node-mini">Groq LLM</div>
+    </div>
+    <button class="arch-open-btn" onclick="openArchModal()">استكشف الهيكل الكامل ↗</button>
+  </section>
+
+  <section class="landing-section">
+    <div class="section-head"><h2>التقنيات المستخدمة</h2></div>
+    <div class="tech-grid">
+      <span class="tech-chip">🐍 Python</span><span class="tech-chip">⚡ FastAPI</span>
+      <span class="tech-chip">🔗 LangChain</span><span class="tech-chip">🧠 Groq</span>
+      <span class="tech-chip">🗄️ ChromaDB</span><span class="tech-chip">🌐 HTML/CSS/JS</span>
+      <span class="tech-chip">🔍 Hybrid Search</span><span class="tech-chip">📐 Vector Database</span>
+      <span class="tech-chip">💬 LLM</span>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="section-head"><h2>طريقتان للاستخدام</h2></div>
+    <div class="workflows-grid">
+      <div class="workflow-card"><div class="wf-num">مسار 1</div><h3>أسئلة قانونية</h3><p>اكتب سؤالك، والنظام يبحث في القانون المصري ويرد بإجابة مدعّمة بمصادر رسمية قابلة للفتح.</p></div>
+      <div class="workflow-card"><div class="wf-num">مسار 2</div><h3>مراجعة عقد</h3><p>ارفع ملف PDF لعقدك، ويتم استخراج نوعه، ومقارنة بنوده، وإصدار تقرير مفصل بالحالة.</p></div>
+    </div>
+  </section>
+
+  <section class="landing-section">
+    <div class="section-head"><h2>عن المشروع</h2></div>
+    <div class="about-grid">
+      <div class="about-item"><h4>الهدف</h4><p>تسهيل الوصول لفهم القانون المصري وتحليل العقود باستخدام الذكاء الاصطناعي.</p></div>
+      <div class="about-item"><h4>المشكلة</h4><p>صعوبة فهم النصوص القانونية ومراجعة العقود بدون خلفية قانونية متخصصة.</p></div>
+      <div class="about-item"><h4>الحل</h4><p>نظام RAG هجين يجمع بين البحث النصي والدلالي، مع نموذج لغوي لتوليد إجابات دقيقة.</p></div>
+      <div class="about-item"><h4>القيود</h4><p>النظام أداة مساعدة للفهم الأولي، ودقته مرتبطة بجودة المصادر المتاحة له.</p></div>
+    </div>
+    <div class="about-disclaimer">⚠️ هذا النظام أداة مساعدة فقط، ولا يغني إطلاقًا عن استشارة محامٍ مختص.</div>
+  </section>
+
+  <footer class="site-footer">
+    <div>المساعد القانوني المصري — مشروع تخرج</div>
+    <div class="footer-links">
+      <a href="#" onclick="return false;">GitHub</a>
+      <a href="#" onclick="return false;">LinkedIn</a>
+      <a href="#" onclick="return false;">Email</a>
+    </div>
+    <div>© 2026 جميع الحقوق محفوظة</div>
+  </footer>
+</div>
+
+<!-- ============================================================
+     CHAT APP VIEW
+============================================================ -->
+<div data-view="app" id="view-app">
+  <div class="app-shell">
+    <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <svg class="seal-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2 3 6v2h18V6l-9-4Z"/><path d="M5 10v8M9 10v8M15 10v8M19 10v8"/><path d="M3 21h18"/></svg>
+        <h1>المساعد القانوني</h1>
+        <div class="brand-sub">مبني على مصادر القانون المصري الرسمية</div>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>الخدمات</h4>
+        <div class="service-row"><span class="service-icon">⚖️</span><span>إجابات قانونية موثّقة بالمصدر</span></div>
+        <div class="service-row"><span class="service-icon">📄</span><span>تحليل عقود PDF ورصد البنود الناقصة</span></div>
+        <div class="service-row"><span class="service-icon">💬</span><span>أسئلة متابعة وذاكرة محادثة</span></div>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>روابط سريعة</h4>
+        <button class="link-btn" onclick="showView('dashboard')">لوحة الإحصائيات 📊</button>
+        <button class="link-btn" onclick="showView('compare')">مقارنة عقدين 🔍</button>
+        <button class="link-btn" onclick="openAbout()">عن المشروع</button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="badge-live"><span class="badge-dot"></span> متصل بالسيرفر</div>
+        <button id="clear-btn" onclick="clearHistory()">🗑 مسح المحادثة</button>
+      </div>
+    </aside>
+
+    <div class="chat-shell">
+      <div class="chat-topbar">
+        <button class="sidebar-toggle" onclick="openSidebar()">☰</button>
+        <span class="mono" style="font-size:.75rem;color:var(--ink-dim)">المساعد القانوني</span>
+        <button class="sidebar-toggle" onclick="showView('landing')">✕</button>
+      </div>
+
+      <div id="chat-box">
+        <div class="welcome" id="welcome">
+          <span class="welcome-icon">⚖️</span>
+          <h2>كيف يمكنني مساعدتك؟</h2>
+          <p>اسألني أي سؤال قانوني، أو ارفع عقد (PDF) وسأراجعه لك<br/>من نصوص القانون المصري مباشرةً</p>
+          <div class="suggestions">
+            <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي عقوبة السرقة؟</button>
+            <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي حقوق العامل؟</button>
+            <button class="suggestion-btn" onclick="askSuggestion(this)">شروط عقد الإيجار</button>
+            <button class="suggestion-btn" onclick="askSuggestion(this)">عقوبة القتل العمد</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="input-area">
+        <input type="file" id="file-input" accept="application/pdf,image/jpeg,image/png,image/webp,image/bmp,image/tiff" multiple style="display:none" onchange="handleFileSelect(event)">
+        <button id="upload-btn" title="رفع عقد (PDF أو صور)" onclick="document.getElementById('file-input').click()">📎</button>
+        <textarea id="user-input" placeholder="اكتب سؤالك القانوني هنا..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button id="send-btn" onclick="sendMessage()">إرسال</button>
+      </div>
     </div>
   </div>
 </div>
 
-<div id="input-area">
-  <button id="clear-btn" onclick="clearHistory()">🗑 محو</button>
+<!-- ============================================================
+     DASHBOARD VIEW
+============================================================ -->
+<div data-view="dashboard" id="view-dashboard">
+  <section class="landing-section" style="padding-top:40px;">
+    <div class="section-head"><h2>لوحة الإحصائيات</h2><p>تعكس نشاطك في هذا المتصفح فقط — وليست إحصائيات عامة للمنصة</p></div>
 
-  <input type="file" id="file-input" accept="application/pdf" style="display:none" onchange="handleFileSelect(event)">
-  <button id="upload-btn" onclick="document.getElementById('file-input').click()" title="رفع عقد PDF">📎</button>
+    <div class="dash-grid">
+      <div class="dash-card"><div class="dnum" id="dash-questions">0</div><div class="dlabel">سؤال قانوني تم طرحه</div></div>
+      <div class="dash-card"><div class="dnum" id="dash-contracts">0</div><div class="dlabel">عقد تم تحليله</div></div>
+      <div class="dash-card"><div class="dnum" id="dash-lastactive">—</div><div class="dlabel">آخر نشاط</div></div>
+    </div>
 
-  <textarea
-    id="user-input"
-    placeholder="اكتب سؤالك القانوني هنا، أو ارفع عقد لمراجعته..."
-    rows="1"
-    onkeydown="handleKey(event)"
-    oninput="autoResize(this)"
-  ></textarea>
-  <button id="send-btn" onclick="sendMessage()">إرسال ➤</button>
+    <div class="dash-panels">
+      <div class="dash-panel">
+        <h3>توزيع حالة البنود</h3>
+        <div class="donut-wrap">
+          <div class="donut" id="clause-donut"></div>
+          <div class="donut-legend">
+            <div><span class="sw" style="background:var(--ok)"></span>سليم: <b id="leg-ok">0</b></div>
+            <div><span class="sw" style="background:var(--issue)"></span>فيه مشكلة: <b id="leg-issue">0</b></div>
+            <div><span class="sw" style="background:var(--missing)"></span>ناقص: <b id="leg-missing">0</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="dash-panel">
+        <h3>نشاط حسب النوع</h3>
+        <div class="bar-row"><span class="bar-label">أسئلة قانونية</span><div class="bar-track"><div class="bar-fill" id="bar-legal" style="width:0%"></div></div></div>
+        <div class="bar-row"><span class="bar-label">تحليل عقود</span><div class="bar-track"><div class="bar-fill" id="bar-contract" style="width:0%"></div></div></div>
+        <div class="bar-row"><span class="bar-label">أسئلة متابعة</span><div class="bar-track"><div class="bar-fill" id="bar-followup" style="width:0%"></div></div></div>
+      </div>
+    </div>
+    <div class="dash-note">البيانات محفوظة محليًا في متصفحك (localStorage) ولا يتم إرسالها لأي سيرفر.</div>
+  </section>
+</div>
+
+<!-- ============================================================
+     CONTRACT COMPARISON VIEW
+============================================================ -->
+<div data-view="compare" id="view-compare">
+  <section class="landing-section" style="padding-top:40px;">
+    <div class="section-head"><h2>مقارنة عقدين جنبًا إلى جنب</h2><p>ارفع عقدين واحصل على تقريرين منفصلين للمقارنة بينهما</p></div>
+
+    <div class="compare-upload-row">
+      <div class="compare-slot" id="compare-slot-a" onclick="document.getElementById('compare-file-a').click()">
+        <input type="file" id="compare-file-a" accept="application/pdf" style="display:none" onchange="handleCompareFile(event,'A')">
+        <span class="slot-icon">📄</span>
+        <div>العقد الأول</div>
+        <div class="slot-name" id="compare-name-a">اضغط لرفع ملف PDF</div>
+      </div>
+      <div class="compare-slot" id="compare-slot-b" onclick="document.getElementById('compare-file-b').click()">
+        <input type="file" id="compare-file-b" accept="application/pdf" style="display:none" onchange="handleCompareFile(event,'B')">
+        <span class="slot-icon">📄</span>
+        <div>العقد الثاني</div>
+        <div class="slot-name" id="compare-name-b">اضغط لرفع ملف PDF</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:24px;">
+      <button class="btn btn-primary" id="compare-run-btn" onclick="runComparison()" disabled>قارن العقدين</button>
+    </div>
+
+    <div class="compare-results" id="compare-results"></div>
+  </section>
+</div>
+
+<!-- ============================================================
+     ABOUT MODAL
+============================================================ -->
+<div class="overlay" id="about-overlay" onclick="closeAboutOverlay(event)">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeAbout()">✕</button>
+    <h2>عن المشروع</h2>
+    <p style="line-height:1.9;font-size:.88rem;color:var(--ink-dim);">
+      المساعد القانوني المصري هو مشروع تخرج يهدف لتسهيل الوصول لفهم القانون المصري
+      وتحليل العقود باستخدام تقنيات الذكاء الاصطناعي، من خلال نظام استرجاع هجين
+      (Hybrid RAG) يجمع بين البحث النصي والدلالي، مدعوم بنموذج لغوي كبير لتوليد
+      إجابات دقيقة ومربوطة بمصادرها.
+    </p>
+    <div class="about-disclaimer" style="margin-top:16px;">⚠️ هذا النظام أداة مساعدة فقط، ولا يغني عن استشارة محامٍ مختص.</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     INTERACTIVE ARCHITECTURE MODAL
+============================================================ -->
+<div class="overlay" id="arch-overlay" onclick="closeArchOverlay(event)">
+  <div class="modal-card" style="max-width:520px;">
+    <button class="modal-close" onclick="closeArchModal()">✕</button>
+    <h2>الهيكل التقني التفاعلي</h2>
+    <p style="font-size:.8rem;color:var(--ink-dim);margin-bottom:16px;">اضغط على أي مرحلة لمعرفة تفاصيلها</p>
+    <div class="arch-diagram" id="arch-diagram"></div>
+    <div class="arch-desc" id="arch-desc">اضغط على أي عقدة بالأعلى لعرض شرحها هنا.</div>
+  </div>
 </div>
 
 <script>
+  /* ================================================================
+     CONFIG
+  ================================================================ */
   const SESSION_ID = "session_" + Math.random().toString(36).substr(2, 9);
-  const API_URL = "http://127.0.0.1:8000";
+  // PART 11: local by default; swap this for your deployed backend URL when going live.
+  const API_URL = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+    ? "http://127.0.0.1:8000"
+    : "http://127.0.0.1:8000"; // ← replace with e.g. "https://your-backend.onrender.com" after deploying
 
-  const CLAUSE_LABELS = {
-    ok: "سليم",
-    missing: "ناقص",
-    issue: "فيه مشكلة"
-  };
+  const CLAUSE_LABELS = { ok: "سليم", missing: "ناقص", issue: "فيه مشكلة" };
 
-  function handleKey(e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
+  /* ================================================================
+     VIEW SWITCHING
+  ================================================================ */
+  function showView(name) {
+    document.querySelectorAll('[data-view]').forEach(v => v.classList.toggle('active', v.dataset.view === name));
+    document.querySelectorAll('.topnav-links [data-nav]').forEach(b => b.classList.toggle('active', b.dataset.nav === name));
+    window.scrollTo(0,0);
+    if (name === 'dashboard') renderDashboard();
+    if (name === 'app') document.getElementById('user-input')?.focus();
   }
 
-  function autoResize(el) {
-    el.style.height = "48px";
-    el.style.height = Math.min(el.scrollHeight, 140) + "px";
+  function rippleAndGo(e, view) {
+    const btn = e.currentTarget;
+    const circle = document.createElement('span');
+    circle.className = 'ripple';
+    const rect = btn.getBoundingClientRect();
+    circle.style.left = (e.clientX - rect.left) + 'px';
+    circle.style.top = (e.clientY - rect.top) + 'px';
+    circle.style.width = circle.style.height = '10px';
+    btn.appendChild(circle);
+    setTimeout(() => circle.remove(), 500);
+    showView(view);
   }
 
-  function removeWelcome() {
-    const w = document.getElementById("welcome");
-    if (w) w.remove();
+  /* ================================================================
+     DARK MODE
+  ================================================================ */
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    document.getElementById('theme-toggle-btn').textContent = t === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('theme', t);
+  }
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  }
+  (function initTheme() {
+    const saved = localStorage.getItem('theme');
+    if (saved) { applyTheme(saved); }
+    else { applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
+  })();
+
+  /* ================================================================
+     ANIMATED STAT COUNTERS
+  ================================================================ */
+  function animateCounters() {
+    document.querySelectorAll('.stat-num[data-count]').forEach(el => {
+      const target = parseInt(el.dataset.count, 10);
+      let cur = 0;
+      const step = Math.max(1, Math.round(target / 40));
+      const iv = setInterval(() => {
+        cur += step;
+        if (cur >= target) { cur = target; clearInterval(iv); }
+        el.textContent = cur + (target >= 100 ? "+" : "");
+      }, 25);
+    });
+  }
+  animateCounters();
+
+  /* ================================================================
+     SIDEBAR / ABOUT MODAL (chat page)
+  ================================================================ */
+  function openSidebar() { document.getElementById("sidebar").classList.add("open"); document.getElementById("sidebar-backdrop").classList.add("open"); }
+  function closeSidebar() { document.getElementById("sidebar").classList.remove("open"); document.getElementById("sidebar-backdrop").classList.remove("open"); }
+  function openAbout() { document.getElementById("about-overlay").classList.add("open"); }
+  function closeAbout() { document.getElementById("about-overlay").classList.remove("open"); }
+  function closeAboutOverlay(e) { if (e.target.id === "about-overlay") closeAbout(); }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { closeAbout(); closeSidebar(); closeArchModal(); }
+  });
+
+  function handleKey(e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+  function autoResize(el) { el.style.height = "46px"; el.style.height = Math.min(el.scrollHeight, 140) + "px"; }
+  function removeWelcome() { const w = document.getElementById("welcome"); if (w) w.remove(); }
+  function escapeHtml(text) { return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  /* ================================================================
+     PART 5 — tiny markdown renderer (bold/italic/code/lists/tables)
+  ================================================================ */
+  function renderMarkdown(raw) {
+    let text = escapeHtml(raw);
+    // fenced code blocks
+    text = text.replace(/```([\s\S]*?)```/g, (m, code) => `<pre><code>${code.trim()}</code></pre>`);
+    // inline code
+    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // bold / italic
+    text = text.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<i>$1</i>');
+    // tables (simple pipe syntax)
+    text = text.replace(/((?:^\|.*\|$\n?)+)/gm, (block) => {
+      const rows = block.trim().split('\n').filter(r => !/^\|[\s:|-]+\|$/.test(r));
+      if (rows.length < 1) return block;
+      let html = '<table>';
+      rows.forEach((r, i) => {
+        const cells = r.replace(/^\||\|$/g,'').split('|').map(c=>c.trim());
+        const tag = i === 0 ? 'th' : 'td';
+        html += '<tr>' + cells.map(c => `<${tag}>${c}</${tag}>`).join('') + '</tr>';
+      });
+      return html + '</table>';
+    });
+    // lists
+    text = text.replace(/((?:^- .*(?:\n|$))+)/gm, (block) => {
+      const items = block.trim().split('\n').map(l => `<li>${l.replace(/^- /,'')}</li>`).join('');
+      return `<ul>${items}</ul>`;
+    });
+    // paragraphs
+    text = text.split(/\n{2,}/).map(p => p.match(/^<(table|ul|pre)/) ? p : `<p>${p.replace(/\n/g,'<br>')}</p>`).join('');
+    return text;
   }
 
+  /* ================================================================
+     MESSAGE RENDERING
+  ================================================================ */
   function appendUserMessage(text) {
     removeWelcome();
     const chatBox = document.getElementById("chat-box");
     const wrap = document.createElement("div");
     wrap.className = "message-wrap user-wrap";
-    wrap.innerHTML = `
-      <span class="msg-label">أنت</span>
-      <div class="message user">${escapeHtml(text)}</div>
-    `;
+    wrap.innerHTML = `<span class="msg-label">أنت</span><div class="message user">${escapeHtml(text)}</div>`;
     chatBox.appendChild(wrap);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
@@ -479,108 +961,116 @@
     const chatBox = document.getElementById("chat-box");
     const wrap = document.createElement("div");
     wrap.className = "message-wrap user-wrap";
-    wrap.innerHTML = `
-      <span class="msg-label">أنت</span>
-      <div class="message user file-msg">📎 <span>${escapeHtml(filename)}</span></div>
-    `;
+    wrap.innerHTML = `<span class="msg-label">أنت</span><div class="message user file-msg">📎 <span>${escapeHtml(filename)}</span></div>`;
     chatBox.appendChild(wrap);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  function appendLoading(text) {
+  const CONTRACT_STEPS = ["قراءة الملف", "استخراج النص", "تحديد نوع العقد", "مقارنة البنود", "توليد التقرير", "تم الانتهاء"];
+
+  function appendLoading(text, withSteps) {
     const chatBox = document.getElementById("chat-box");
     const div = document.createElement("div");
     div.className = "loading";
     div.id = "loading-msg";
-    div.innerHTML = `
-      <div class="dots">
-        <span></span><span></span><span></span>
-      </div>
-      ${text || "جاري البحث في القانون المصري..."}
-    `;
+    let stepsHtml = "";
+    if (withSteps) {
+      stepsHtml = '<div class="progress-steps">' + CONTRACT_STEPS.map((s,i) =>
+        `<div class="progress-step" data-step="${i}"><span class="pstep-dot"></span>${s}</div>`).join('') + '</div>';
+    }
+    div.innerHTML = `<div class="loading-title"><div class="dots"><span></span><span></span><span></span></div>${text}</div>${stepsHtml}`;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
+    if (withSteps) animateContractSteps(div);
     return div;
+  }
+
+  function animateContractSteps(div) {
+    let i = 0;
+    const steps = div.querySelectorAll('.progress-step');
+    const iv = setInterval(() => {
+      steps.forEach((s, idx) => { s.classList.toggle('done', idx < i); s.classList.toggle('active', idx === i); });
+      i++;
+      if (i >= steps.length) clearInterval(iv);
+    }, 550);
+    div._stepInterval = iv;
+    div._finishSteps = () => { clearInterval(iv); steps.forEach(s => s.classList.add('done')); steps.forEach(s=>s.classList.remove('active')); };
+  }
+
+  function copyToClipboard(btn, text) {
+    navigator.clipboard?.writeText(text).then(() => {
+      const old = btn.textContent; btn.textContent = "✓ تم النسخ";
+      setTimeout(() => btn.textContent = old, 1500);
+    });
   }
 
   function appendBotMessage(text, sources) {
     const chatBox = document.getElementById("chat-box");
-
     const wrap = document.createElement("div");
     wrap.className = "message-wrap bot-wrap";
 
-    // الإجابة
     const label = document.createElement("span");
-    label.className = "msg-label";
-    label.textContent = "المساعد القانوني";
+    label.className = "msg-label"; label.textContent = "المساعد القانوني";
     wrap.appendChild(label);
 
     const msgDiv = document.createElement("div");
     msgDiv.className = "message bot";
-    msgDiv.textContent = text;
+    msgDiv.innerHTML = renderMarkdown(text || "");
     wrap.appendChild(msgDiv);
 
-    // السورسز
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "copy-btn"; copyBtn.textContent = "📋 نسخ";
+    copyBtn.onclick = () => copyToClipboard(copyBtn, text);
+    wrap.appendChild(copyBtn);
+
     if (sources && sources.length > 0) {
-      const unique = [];
-      const seen = new Set();
+      const unique = []; const seen = new Set();
       for (const s of sources) {
         const key = `${s.source}_${s.page}`;
         if (!seen.has(key)) { seen.add(key); unique.push(s); }
       }
-
       const sourcesRow = document.createElement("div");
       sourcesRow.className = "sources-row";
-
       for (const s of unique) {
-        const btn = document.createElement("button");
-        btn.className = "source-btn";
-        btn.innerHTML = `📖 ${s.source} — ص${s.page}`;
-        btn.onclick = () => {
-          window.open(`${API_URL}/pdf/${encodeURIComponent(s.source)}#page=${s.page}`, "_blank");
-        };
-        sourcesRow.appendChild(btn);
+        const card = document.createElement("div");
+        card.className = "source-card";
+        card.innerHTML = `<div class="sc-info"><span class="sc-name">📖 ${escapeHtml(s.source)}</span><span class="sc-page">صفحة ${s.page}</span></div>`;
+        const openBtn = document.createElement("button");
+        openBtn.textContent = "فتح PDF";
+        openBtn.onclick = () => window.open(`${API_URL}/pdf/${encodeURIComponent(s.source)}#page=${s.page}`, "_blank");
+        card.appendChild(openBtn);
+        sourcesRow.appendChild(card);
       }
-
       wrap.appendChild(sourcesRow);
     }
-
     chatBox.appendChild(wrap);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  function appendContractReport(answerText, validation) {
-    const chatBox = document.getElementById("chat-box");
-
+  // Shared renderer used by both the normal chat flow AND the comparison view (Part 16)
+  function buildContractReportEl(answerText, validation) {
     const wrap = document.createElement("div");
     wrap.className = "message-wrap bot-wrap";
-
     const label = document.createElement("span");
-    label.className = "msg-label";
-    label.textContent = "مراجعة العقد";
+    label.className = "msg-label"; label.textContent = "مراجعة العقد";
     wrap.appendChild(label);
 
-    // ملخص نصي طبيعي
     const msgDiv = document.createElement("div");
     msgDiv.className = "message bot";
-    msgDiv.textContent = answerText;
+    msgDiv.innerHTML = renderMarkdown(answerText || "");
     wrap.appendChild(msgDiv);
 
-    // تقرير تفصيلي لو موجود
     if (validation && validation.clauses) {
       const report = document.createElement("div");
       report.className = "contract-report";
-
       const summary = validation.summary || {};
       report.innerHTML = `
-        <div class="cr-header">📋 تقرير مراجعة العقد (${validation.contract_type || ""})</div>
+        <div class="cr-header">📋 تقرير مراجعة العقد (${escapeHtml(validation.contract_type || "")})</div>
         <div class="cr-summary">
           <span class="cr-pill ok">${summary.ok || 0} سليم</span>
           <span class="cr-pill missing">${summary.missing || 0} ناقص</span>
           <span class="cr-pill issue">${summary.issue || 0} فيه مشكلة</span>
-        </div>
-      `;
-
+        </div>`;
       const clausesWrap = document.createElement("div");
       for (const clause of validation.clauses) {
         const row = document.createElement("div");
@@ -590,30 +1080,78 @@
           <span class="cr-clause-text">
             <b>${escapeHtml(clause.title)}</b> — ${CLAUSE_LABELS[clause.status] || clause.status}
             ${clause.reason ? `<br><span>${escapeHtml(clause.reason)}</span>` : ""}
-          </span>
-        `;
+          </span>`;
         clausesWrap.appendChild(row);
       }
       report.appendChild(clausesWrap);
       wrap.appendChild(report);
     }
+    return wrap;
+  }
 
-    chatBox.appendChild(wrap);
+  function appendContractReport(answerText, validation) {
+    const chatBox = document.getElementById("chat-box");
+    chatBox.appendChild(buildContractReportEl(answerText, validation));
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
+  /* ================================================================
+     PART 14 — localStorage-backed usage tracking (no new backend needed)
+  ================================================================ */
+  function trackActivity(flow, validation) {
+    const stats = JSON.parse(localStorage.getItem('legalai_stats') || '{"questions":0,"contracts":0,"legal":0,"contract_new":0,"followup":0,"clauses":{"ok":0,"issue":0,"missing":0},"lastActive":null}');
+    stats.lastActive = new Date().toISOString();
+    if (flow === 'legal') { stats.questions++; stats.legal++; }
+    else if (flow && flow.startsWith('contract')) {
+      stats.contracts++;
+      if (flow === 'contract_follow_up') stats.followup++; else stats.contract_new++;
+      if (validation && validation.summary) {
+        stats.clauses.ok += validation.summary.ok || 0;
+        stats.clauses.issue += validation.summary.issue || 0;
+        stats.clauses.missing += validation.summary.missing || 0;
+      }
+    }
+    localStorage.setItem('legalai_stats', JSON.stringify(stats));
+  }
+
+  function renderDashboard() {
+    const stats = JSON.parse(localStorage.getItem('legalai_stats') || '{"questions":0,"contracts":0,"legal":0,"contract_new":0,"followup":0,"clauses":{"ok":0,"issue":0,"missing":0},"lastActive":null}');
+    document.getElementById('dash-questions').textContent = stats.questions;
+    document.getElementById('dash-contracts').textContent = stats.contracts;
+    document.getElementById('dash-lastactive').textContent = stats.lastActive ? new Date(stats.lastActive).toLocaleString('ar-EG') : "—";
+
+    document.getElementById('leg-ok').textContent = stats.clauses.ok;
+    document.getElementById('leg-issue').textContent = stats.clauses.issue;
+    document.getElementById('leg-missing').textContent = stats.clauses.missing;
+
+    const total = stats.clauses.ok + stats.clauses.issue + stats.clauses.missing;
+    const donut = document.getElementById('clause-donut');
+    if (total === 0) {
+      donut.style.background = 'var(--paper-3)';
+    } else {
+      const okPct = (stats.clauses.ok/total)*100;
+      const issuePct = (stats.clauses.issue/total)*100;
+      donut.style.background = `conic-gradient(var(--ok) 0 ${okPct}%, var(--issue) ${okPct}% ${okPct+issuePct}%, var(--missing) ${okPct+issuePct}% 100%)`;
+    }
+
+    const maxBar = Math.max(stats.legal, stats.contract_new, stats.followup, 1);
+    document.getElementById('bar-legal').style.width = (stats.legal/maxBar*100) + '%';
+    document.getElementById('bar-contract').style.width = (stats.contract_new/maxBar*100) + '%';
+    document.getElementById('bar-followup').style.width = (stats.followup/maxBar*100) + '%';
+  }
+
+  /* ================================================================
+     CHAT / UPLOAD FLOW (backend contract untouched)
+  ================================================================ */
   async function sendMessage() {
     const input = document.getElementById("user-input");
-    const btn   = document.getElementById("send-btn");
+    const btn = document.getElementById("send-btn");
     const query = input.value.trim();
     if (!query) return;
 
-    input.value = "";
-    input.style.height = "48px";
-    btn.disabled = true;
-
+    input.value = ""; input.style.height = "46px"; btn.disabled = true;
     appendUserMessage(query);
-    appendLoading("جاري البحث في القانون المصري...");
+    appendLoading("جاري البحث في القانون المصري...", false);
 
     try {
       const res = await fetch(`${API_URL}/chat`, {
@@ -621,71 +1159,65 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session_id: SESSION_ID, message: query })
       });
-
       const data = await res.json();
       document.getElementById("loading-msg")?.remove();
-
       renderResponse(data);
-
     } catch (err) {
       document.getElementById("loading-msg")?.remove();
       appendBotMessage("❌ حدث خطأ في الاتصال بالسيرفر. تأكد أن الـ backend شغال.", []);
     }
-
-    btn.disabled = false;
-    input.focus();
+    btn.disabled = false; input.focus();
   }
 
   async function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    event.target.value = ""; // يسمح باختيار نفس الملف تاني لو حابب
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) return;
+    event.target.value = "";
 
     const uploadBtn = document.getElementById("upload-btn");
     uploadBtn.disabled = true;
 
-    appendUserFileMessage(file.name);
-    appendLoading("جاري تحليل العقد...");
+    const label = files.length === 1 ? files[0].name : `${files.length} صور (صفحات عقد واحد)`;
+    appendUserFileMessage(label);
+    const loadingEl = appendLoading(
+      files.length > 1 ? "جاري تحليل صفحات العقد..." : "جاري تحليل العقد...",
+      true
+    );
 
     const formData = new FormData();
     formData.append("session_id", SESSION_ID);
-    formData.append("file", file);
+    for (const f of files) {
+      formData.append("files", f);
+    }
 
     try {
-      const res = await fetch(`${API_URL}/contract/upload`, {
-        method: "POST",
-        body: formData
-      });
-
+      const res = await fetch(`${API_URL}/contract/upload`, { method: "POST", body: formData });
       const data = await res.json();
+      loadingEl._finishSteps?.();
+      await new Promise(r => setTimeout(r, 300));
       document.getElementById("loading-msg")?.remove();
-
       renderResponse(data);
-
     } catch (err) {
+      loadingEl._finishSteps?.();
       document.getElementById("loading-msg")?.remove();
       appendBotMessage("❌ حدث خطأ في رفع أو تحليل العقد.", []);
     }
-
     uploadBtn.disabled = false;
   }
 
   function renderResponse(data) {
     const flow = data.flow || "legal";
-
     if (flow.startsWith("contract")) {
       const validation = data.extra ? data.extra.validation : null;
       appendContractReport(data.answer, validation);
+      trackActivity(flow, validation);
     } else {
       appendBotMessage(data.answer, data.sources || []);
+      trackActivity(flow, null);
     }
   }
 
-  function askSuggestion(btn) {
-    document.getElementById("user-input").value = btn.textContent;
-    sendMessage();
-  }
+  function askSuggestion(btn) { document.getElementById("user-input").value = btn.textContent; sendMessage(); }
 
   async function clearHistory() {
     await fetch(`${API_URL}/chat/${SESSION_ID}`, { method: "DELETE" });
@@ -704,9 +1236,101 @@
       </div>`;
   }
 
-  function escapeHtml(text) {
-    return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  /* ================================================================
+     PART 16 — SIDE-BY-SIDE CONTRACT COMPARISON
+     (reuses the same single /contract/upload endpoint, called twice
+     with distinct session ids — no backend change required)
+  ================================================================ */
+  const compareFiles = { A: null, B: null };
+  function handleCompareFile(event, slot) {
+    const file = event.target.files[0];
+    if (!file) return;
+    compareFiles[slot] = file;
+    document.getElementById(`compare-name-${slot.toLowerCase()}`).textContent = file.name;
+    document.getElementById(`compare-slot-${slot.toLowerCase()}`).classList.add('filled');
+    document.getElementById('compare-run-btn').disabled = !(compareFiles.A && compareFiles.B);
   }
+
+  async function uploadForCompare(file, tag) {
+    const formData = new FormData();
+    formData.append("session_id", SESSION_ID + "_" + tag);
+    formData.append("file", file);
+    const res = await fetch(`${API_URL}/contract/upload`, { method: "POST", body: formData });
+    return res.json();
+  }
+
+  async function runComparison() {
+    const btn = document.getElementById('compare-run-btn');
+    btn.disabled = true; btn.textContent = "جاري التحليل...";
+    const resultsEl = document.getElementById('compare-results');
+    resultsEl.innerHTML = '<div class="dash-note">جاري رفع وتحليل العقدين...</div>';
+
+    try {
+      const [dataA, dataB] = await Promise.all([
+        uploadForCompare(compareFiles.A, 'cmpA'),
+        uploadForCompare(compareFiles.B, 'cmpB')
+      ]);
+      resultsEl.innerHTML = "";
+      [dataA, dataB].forEach((data, idx) => {
+        const col = document.createElement('div');
+        col.className = 'compare-col';
+        const validation = data.extra ? data.extra.validation : null;
+        const el = buildContractReportEl(data.answer, validation);
+        el.style.alignSelf = 'stretch';
+        col.appendChild(el);
+        resultsEl.appendChild(col);
+        trackActivity(data.flow, validation);
+      });
+    } catch (err) {
+      resultsEl.innerHTML = '<div class="dash-note" style="color:var(--seal-red)">❌ حدث خطأ أثناء المقارنة. تأكد أن الـ backend شغال.</div>';
+    }
+    btn.disabled = false; btn.textContent = "قارن العقدين";
+  }
+
+  /* ================================================================
+     PART 15 — INTERACTIVE ARCHITECTURE DIAGRAM
+  ================================================================ */
+  const ARCH_STAGES = [
+    { name: "المستخدم", desc: "نقطة البداية: يكتب المستخدم سؤالًا قانونيًا أو يرفع عقد PDF من واجهة الدردشة." },
+    { name: "الواجهة الأمامية", desc: "صفحة HTML/CSS/JS ترسل الطلب عبر fetch إلى نقاط النهاية /chat أو /contract/upload." },
+    { name: "FastAPI", desc: "السيرفر الخلفي المبني بـ FastAPI يستقبل الطلب، ويستدعي pipeline.handle_message." },
+    { name: "Intent Router", desc: "يحدد نوع الطلب: سؤال قانوني عادي أم تحليل عقد، ويوجهه للمسار المناسب." },
+    { name: "Legal RAG", desc: "بحث هجين (BM25 + Dense Retrieval مع RRF) داخل ChromaDB لإيجاد النصوص القانونية الأقرب للسؤال." },
+    { name: "Contract Analysis", desc: "لو الطلب عقد: استخراج النص من PDF، تحديد نوعه، ومقارنة بنوده ببنود مرجعية." },
+    { name: "Groq LLM", desc: "النصوص المسترجَعة تُرسل لنموذج لغوي كبير عبر Groq لتوليد إجابة نهائية مفهومة." },
+    { name: "الإجابة", desc: "الرد النهائي يرجع للواجهة مع المصادر (لو سؤال قانوني) أو تقرير البنود (لو عقد)." }
+  ];
+
+  function buildArchDiagram() {
+    const container = document.getElementById('arch-diagram');
+    container.innerHTML = '';
+    ARCH_STAGES.forEach((stage, i) => {
+      const node = document.createElement('div');
+      node.className = 'arch-node';
+      node.textContent = stage.name;
+      node.onclick = () => selectArchNode(i);
+      container.appendChild(node);
+      if (i < ARCH_STAGES.length - 1) {
+        const conn = document.createElement('div');
+        conn.className = 'arch-connector';
+        conn.innerHTML = `<svg width="2" height="26"><line x1="1" y1="0" x2="1" y2="26" stroke="var(--emerald)" stroke-width="2" stroke-dasharray="4 4" style="animation: dash 1s linear infinite;"/></svg>`;
+        container.appendChild(conn);
+      }
+    });
+  }
+  function selectArchNode(i) {
+    document.querySelectorAll('.arch-node').forEach((n, idx) => n.classList.toggle('active', idx === i));
+    document.getElementById('arch-desc').textContent = ARCH_STAGES[i].desc;
+  }
+  function openArchModal() {
+    if (!document.getElementById('arch-diagram').children.length) buildArchDiagram();
+    document.getElementById('arch-overlay').classList.add('open');
+  }
+  function closeArchModal() { document.getElementById('arch-overlay').classList.remove('open'); }
+  function closeArchOverlay(e) { if (e.target.id === 'arch-overlay') closeArchModal(); }
+
+  // init
+  showView('landing');
 </script>
 
 </body>

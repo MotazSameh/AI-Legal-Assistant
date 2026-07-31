@@ -68,8 +68,6 @@ DATA_PATH = r"E:\3th_2\NLP\legal_ai_assistant\data\contracts"
 
 
 import re
-
-import re
 import unicodedata
 
 def fix_reversed_arabic(text):

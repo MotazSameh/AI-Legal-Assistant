@@ -1,0 +1,100 @@
+[
+  {
+    "time": "2026-07-31 08:13:55",
+    "flow": "contract_new_analysis",
+    "question": "[رفع ملف: نموذج عقد عمل مكتوب .pdf]",
+    "answer": "الملخص:\nالعقد الحالي يحتوي على 7 بنود سليمة، ولكن هناك بعض القضايا التي تحتاج إلى الانتباه. \n\nهناك 4 بنود ناقصة، وهي: \n- البدلات\n- ساعات العمل\n- سرية المعلومات\n- عدم المنافسة\n\nكما توجد مشاكل في بندين، وهما:\n- بيانات العامل: حيث أن البيانات غير كاملة\n- مكان العمل: حيث أن مكان العمل غير مذكور بشكل واضح\n\nمن الضروري إضافة البنود الناقصة وتعديل البنود التي تحتوي على مشاكل لضمان صحة وكمال العقد.",
+    "sources": [],
+    "extra": {
+      "contract_type": "employment",
+      "validation": {
+        "contract_type": "employment",
+        "summary": {
+          "missing": 4,
+          "issue": 2,
+          "ok": 7
+        },
+        "clauses": [
+          {
+            "clause_id": "employer",
+            "title": "بيانات صاحب العمل",
+            "status": "ok",
+            "reason": "موجود وصياغته سليمة"
+          },
+          {
+            "clause_id": "employee",
+            "title": "بيانات العامل",
+            "status": "issue",
+            "reason": "بيانات الموظف غير كاملة"
+          },
+          {
+            "clause_id": "job_title",
+            "title": "المسمى الوظيفي",
+            "status": "ok",
+            "reason": "موجود وصياغته سليمة"
+          },
+          {
+            "clause_id": "work_place",
+            "title": "مكان العمل",
+            "status": "issue",
+            "reason": "مكان العمل غير مذكور بشكل واضح"
+          },
+          {
+            "clause_id": "salary",
+            "title": "الأجر",
+            "status": "ok",
+            "reason": "البند موجود وصياغته سليمة"
+          },
+          {
+            "clause_id": "allowances",
+            "title": "البدلات",
+            "status": "missing",
+            "reason": "البند غير موجود في نص العقد"
+          },
+          {
+            "clause_id": "working_hours",
+            "title": "ساعات العمل",
+            "status": "missing",
+            "reason": "البند غير موجود في نص العقد"
+          },
+          {
+            "clause_id": "vacations",
+            "title": "الإجازات",
+            "status": "ok",
+            "reason": "البند موجود وصياغته سليمة"
+          },
+          {
+            "clause_id": "probation",
+            "title": "فترة التجربة",
+            "status": "ok",
+            "reason": "فترة التجربة مذكورة بوضوح"
+          },
+          {
+            "clause_id": "termination",
+            "title": "إنهاء العقد",
+            "status": "ok",
+            "reason": "البند موجود وصياغته سليمة"
+          },
+          {
+            "clause_id": "confidentiality",
+            "title": "سرية المعلومات",
+            "status": "missing",
+            "reason": "البند غير موجود في نص العقد"
+          },
+          {
+            "clause_id": "non_compete",
+            "title": "عدم المنافسة",
+            "status": "missing",
+            "reason": "البند غير موجود في نص العقد"
+          },
+          {
+            "clause_id": "signatures",
+            "title": "التوقيعات",
+            "status": "ok",
+            "reason": "توقيع الطرفين موجود وصحيح"
+          }
+        ]
+      }
+    }
+  }
+]

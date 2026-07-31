@@ -1,0 +1,12 @@
+[
+  {
+    "time": "2026-07-30 18:59:09",
+    "flow": "contract_error",
+    "question": "شروط عقد الإيجار",
+    "answer": "من فضلك ارفع ملف العقد (PDF) عشان أقدر أراجعه.",
+    "sources": [],
+    "extra": {
+      "error": "no_file"
+    }
+  }
+]

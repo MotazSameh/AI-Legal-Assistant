@@ -5,7 +5,13 @@ from pydantic import BaseModel
 from backend.pipeline import handle_message          # ← بدل استيراد get_answer مباشرة
 from urllib.parse import quote
 from datetime import datetime
+from pathlib import Path
+from typing import List, Optional
 import os, json
+
+# صيغ الصور المدعومة لرفع صور عقد (بديل عن PDF) — يُستخدم بس للتحقق قبل الحفظ
+IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".webp")
+ALLOWED_UPLOAD_EXTENSIONS = (".pdf",) + IMAGE_EXTENSIONS
 
 app = FastAPI()
 
@@ -17,11 +23,17 @@ app.add_middleware(
 )
 
 # ====================================================
-# Paths
+# Paths (portable — works on Windows, Linux, Render, etc.)
 # ====================================================
-PDF_PATH   = r"E:\3th_2\NLP\legal_ai_assistant\data"
-LOGS_PATH  = r"E:\3th_2\NLP\legal_ai_assistant\logs"
-UPLOAD_PATH = r"E:\3th_2\NLP\legal_ai_assistant\temp_uploads"   # ← جديد: مكان مؤقت لملفات العقود المرفوعة
+# BASE_DIR assumes this file lives at <project_root>/backend/main.py
+# and that data/, logs/, temp_uploads/ live at the project root, one
+# level above backend/ — matching the original E:\...\legal_ai_assistant\
+# layout. Override any of these with env vars if your layout differs.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+PDF_PATH    = Path(os.getenv("PDF_PATH", BASE_DIR / "data"))
+LOGS_PATH   = Path(os.getenv("LOGS_PATH", BASE_DIR / "logs"))
+UPLOAD_PATH = Path(os.getenv("UPLOAD_PATH", BASE_DIR / "temp_uploads"))   # ← جديد: مكان مؤقت لملفات العقود المرفوعة
 
 os.makedirs(LOGS_PATH, exist_ok=True)
 os.makedirs(UPLOAD_PATH, exist_ok=True)   # ← جديد
@@ -133,28 +145,68 @@ def chat(req: ChatRequest):
 
 
 @app.post("/contract/upload", response_model=ChatResponse)
-async def upload_contract(session_id: str = Form(...), file: UploadFile = File(...)):
-    temp_path = os.path.join(UPLOAD_PATH, f"{session_id}_{file.filename}")
+async def upload_contract(
+    session_id: str = Form(...),
+    file: Optional[UploadFile] = File(None),      # ← الاستخدام القديم (Compare feature بيبعته لسه بنفس الاسم)
+    files: Optional[List[UploadFile]] = File(None) # ← جديد: يدعم رفع أكتر من صورة (صفحات عقد واحد)
+):
+    """
+    يدعم 3 حالات رفع:
+    - file (مفرد): PDF أو صورة واحدة — نفس السلوك القديم بالظبط (مستخدم في Compare feature)
+    - files (قائمة، عنصر واحد): PDF أو صورة واحدة، بنفس معاملة file المفرد
+    - files (قائمة، أكتر من عنصر): صور متعددة (صفحات عقد واحد) بتتجمع وتتحلل كعقد واحد
+    """
 
-    with open(temp_path, "wb") as f:
-        content = await file.read()
-        f.write(content)
+    incoming = files if files else ([file] if file else [])
+
+    if not incoming:
+        return ChatResponse(
+            answer="لم يتم إرفاق أي ملف.",
+            sources=[],
+            flow="contract_error",
+            extra={"error": "no_file"}
+        )
+
+    for f in incoming:
+        if not f.filename.lower().endswith(ALLOWED_UPLOAD_EXTENSIONS):
+            return ChatResponse(
+                answer=f"صيغة الملف {f.filename} غير مدعومة. الصيغ المسموحة: PDF أو صورة (jpg, png, ...).",
+                sources=[],
+                flow="contract_error",
+                extra={"error": "unsupported_file_type"}
+            )
+
+    saved_paths = []
+    for f in incoming:
+        temp_path = os.path.join(UPLOAD_PATH, f"{session_id}_{f.filename}")
+        with open(temp_path, "wb") as out:
+            content = await f.read()
+            out.write(content)
+        saved_paths.append(temp_path)
 
     try:
-        result = handle_message(session_id, "راجع هذا العقد من فضلك", uploaded_file_path=temp_path)
+        if len(saved_paths) == 1:
+            uploaded_arg = saved_paths[0]   # نفس السلوك القديم بالظبط: مسار واحد (string)
+        else:
+            uploaded_arg = saved_paths      # قائمة مسارات: صفحات عقد واحد
+
+        result = handle_message(session_id, "راجع هذا العقد من فضلك", uploaded_file_path=uploaded_arg)
     finally:
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
+        for p in saved_paths:
+            if os.path.exists(p):
+                os.remove(p)
 
     normalized = normalize_result(result)
 
+    filenames_label = ", ".join(f.filename for f in incoming)
+
     save_log(
         session_id,
-        f"[رفع ملف: {file.filename}]",     # ← نضيف اسم الملف الفعلي كسياق
+        f"[رفع ملف: {filenames_label}]",
         normalized["answer"],
         [],
         flow=normalized["flow"],
-        extra=normalized["extra"]           # ← دلوقتي التقرير الكامل هيتسجل
+        extra=normalized["extra"]
     )
 
     return ChatResponse(**normalized)
@@ -178,4 +230,5 @@ def get_pdf(filename: str):
         headers={"Content-Disposition": f"inline; filename*=UTF-8''{encoded_name}"}
     )
 
-# e:/3th_2/NLP/legal_ai_assistant/venv/Scripts/uvicorn.exe backend.main:app --reload
+# Local dev:   uvicorn backend.main:app --reload
+# Production:  uvicorn backend.main:app --host 0.0.0.0 --port $PORT

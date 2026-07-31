@@ -228,7 +228,7 @@ def get_answer(query: str, chat_history: list) -> tuple[str, list]:
     response = groq_client.chat.completions.create(
         model="llama-3.3-70b-versatile",   # بدل llama-3.1-8b-instant
         messages=messages,
-        temperature=0,
+        temperature=0.1,
         max_tokens=600,
         frequency_penalty=0.3
     )

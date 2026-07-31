@@ -23,7 +23,9 @@ def handle_message(session_id: str, query: str, uploaded_file_path: str = None):
     }
     """
 
-    has_file = uploaded_file_path is not None
+    has_file = uploaded_file_path is not None and (
+        not isinstance(uploaded_file_path, list) or len(uploaded_file_path) > 0
+    )
     session = session_store.get_session(session_id)
     # ------------------------------------------------------
     # 1) Intent Routing

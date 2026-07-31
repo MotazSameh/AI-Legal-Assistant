@@ -1,0 +1,122 @@
+[
+  {
+    "time": "2026-07-29 21:17:15",
+    "flow": "contract_new_analysis",
+    "question": "[رفع ملف: نموذج عقد عمل مكتوب .pdf]",
+    "answer": "الملخص العام للعقد هو أن هناك بعض القصور في بعض البنود، حيث يوجد 7 بنود سليمة، ولكن هناك 4 بنود ناقصة وهي: البدلات، ساعات العمل، سرية المعلومات، وعدم المنافسة. كما يوجد 2 بند فيه مشكلة، وهما: بيانات العامل ومكان العمل. \n\nيجب إضافة البنود الناقصة لضمان شمولية العقد وتغطية جميع الجوانب المهمة. بالنسبة للبنود التي فيها مشكلة، يتعين تعديلها لضمان دقة ووضوح المعلومات. على سبيل المثال، يجب توضيح تفاصيل بيانات الموظف بشكل كامل، وتحديد مكان العمل بوضوح. بعد إضافة البنود الناقصة وتصحيح الأخطاء، سيكون العقد أكثر شمولاً ووضوحاً.",
+    "sources": [],
+    "extra": {
+      "contract_type": "employment",
+      "validation": {
+        "contract_type": "employment",
+        "summary": {
+          "missing": 4,
+          "issue": 2,
+          "ok": 7
+        },
+        "clauses": [
+          {
+            "clause_id": "employer",
+            "title": "بيانات صاحب العمل",
+            "status": "ok",
+            "reason": "البيانات موجودة وصحيحة"
+          },
+          {
+            "clause_id": "employee",
+            "title": "بيانات العامل",
+            "status": "issue",
+            "reason": "نقص في تفاصيل بيانات الموظف"
+          },
+          {
+            "clause_id": "job_title",
+            "title": "المسمى الوظيفي",
+            "status": "ok",
+            "reason": "البند موجود وصياغته سليمة"
+          },
+          {
+            "clause_id": "work_place",
+            "title": "مكان العمل",
+            "status": "issue",
+            "reason": "مكان العمل غير مذكور بشكل واضح"
+          },
+          {
+            "clause_id": "salary",
+            "title": "الأجر",
+            "status": "ok",
+            "reason": "البند موجود وصياغته سليمة"
+          },
+          {
+            "clause_id": "allowances",
+            "title": "البدلات",
+            "status": "missing",
+            "reason": "البند غير موجود في نص العقد"
+          },
+          {
+            "clause_id": "working_hours",
+            "title": "ساعات العمل",
+            "status": "missing",
+            "reason": "البند غير موجود في نص العقد"
+          },
+          {
+            "clause_id": "vacations",
+            "title": "الإجازات",
+            "status": "ok",
+            "reason": "البند موجود وصياغته سليمة"
+          },
+          {
+            "clause_id": "probation",
+            "title": "فترة التجربة",
+            "status": "ok",
+            "reason": "فترة التجربة مذكورة بوضوح"
+          },
+          {
+            "clause_id": "termination",
+            "title": "إنهاء العقد",
+            "status": "ok",
+            "reason": "البند موجود وصياغته سليمة"
+          },
+          {
+            "clause_id": "confidentiality",
+            "title": "سرية المعلومات",
+            "status": "missing",
+            "reason": "البند غير موجود في نص العقد"
+          },
+          {
+            "clause_id": "non_compete",
+            "title": "عدم المنافسة",
+            "status": "missing",
+            "reason": "البند غير موجود في نص العقد"
+          },
+          {
+            "clause_id": "signatures",
+            "title": "التوقيعات",
+            "status": "ok",
+            "reason": "توقيع الطرفين موجود وصحيح"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "time": "2026-07-29 21:17:29",
+    "flow": "contract_follow_up",
+    "question": "ايه هو اسم الشركه او مقرها",
+    "answer": "اسم الشركة غير مذكور بوضوح، لكن مقرها مذكور في \"القرية الذكية، الجيزة، مصر\".",
+    "sources": [],
+    "extra": {
+      "contract_type": null,
+      "validation": null
+    }
+  },
+  {
+    "time": "2026-07-29 21:17:53",
+    "flow": "contract_follow_up",
+    "question": "ايه هو المسمى الوظيفى",
+    "answer": "المسمى الوظيفي هو \"مهندس برمجيات\".",
+    "sources": [],
+    "extra": {
+      "contract_type": null,
+      "validation": null
+    }
+  }
+]

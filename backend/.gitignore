@@ -5,8 +5,7 @@ venv/
 __pycache__/
 
 # Database (كبيرة الحجم ومش المفروض تتشارك، كل حد يبنيها عنده)
-chroma_db/
-backend/chroma_db/
+
 
 # Logs & temp files (بيانات مستخدمين حقيقية، ميتشاركش)
 logs/

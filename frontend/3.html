@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>المساعد القانوني المصري</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e0bc5a;
+      --gold-dim: rgba(201,168,76,0.15);
+      --bg: #0b0d14;
+      --surface: #12151f;
+      --surface2: #1a1e2e;
+      --border: #232840;
+      --text: #dde1f0;
+      --text-dim: #6b7194;
+      --ok: #4caf7d;
+      --missing: #d9534f;
+      --issue: #d9a441;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ─── Header ─── */
+    header {
+      background: var(--surface);
+      padding: 14px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      background: var(--gold-dim);
+      border: 1px solid var(--gold);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    header h1 {
+      font-family: 'Amiri', serif;
+      font-size: 1.25rem;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 1px;
+    }
+
+    .header-right {
+      margin-right: auto;
+      margin-left: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-live {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 3px rgba(76,175,125,0.15);
+    }
+
+    #about-btn {
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.35);
+      color: var(--gold);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    #about-btn:hover {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+    }
+
+    /* ─── Chat Box ─── */
+    #chat-box {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      scroll-behavior: smooth;
+    }
+
+    #chat-box::-webkit-scrollbar { width: 4px; }
+    #chat-box::-webkit-scrollbar-track { background: transparent; }
+    #chat-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* ─── Welcome ─── */
+    .welcome {
+      margin: auto;
+      text-align: center;
+      padding: 40px 20px;
+      animation: fadeUp 0.6s ease;
+    }
+
+    .welcome-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .welcome h2 {
+      font-family: 'Amiri', serif;
+      font-size: 1.8rem;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .welcome p {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .suggestion-btn {
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .suggestion-btn:hover {
+      background: rgba(201,168,76,0.25);
+      border-color: var(--gold);
+    }
+
+    /* ─── Messages ─── */
+    .message-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .message-wrap.user-wrap { align-items: flex-start; }
+    .message-wrap.bot-wrap  { align-items: flex-end; }
+
+    .msg-label {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      padding: 0 4px;
+    }
+
+    .message {
+      max-width: 72%;
+      padding: 13px 18px;
+      border-radius: 14px;
+      line-height: 1.8;
+      font-size: 0.92rem;
+      white-space: pre-wrap;
+    }
+
+    .user {
+      background: var(--gold);
+      color: #0b0d14;
+      font-weight: 600;
+      border-radius: 14px 14px 0 14px;
+    }
+
+    .user.file-msg {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bot {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 14px 14px 14px 0;
+    }
+
+    .loading {
+      background: var(--surface2);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-size: 0.88rem;
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dots span {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    /* ─── Sources ─── */
+    .sources-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-self: flex-end;
+      margin-top: -4px;
+    }
+
+    .source-btn {
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .source-btn:hover {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+    }
+
+    /* ─── Contract Report ─── */
+    .contract-report {
+      max-width: 72%;
+      align-self: flex-end;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px 14px 14px 0;
+      padding: 14px 18px;
+      font-size: 0.85rem;
+    }
+
+    .contract-report .cr-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+
+    .cr-summary {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cr-pill {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .cr-pill.ok { background: rgba(76,175,125,0.15); color: var(--ok); }
+    .cr-pill.missing { background: rgba(217,83,79,0.15); color: var(--missing); }
+    .cr-pill.issue { background: rgba(217,164,65,0.15); color: var(--issue); }
+
+    .cr-clause {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 0;
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    .cr-clause:first-of-type { border-top: none; }
+
+    .cr-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .cr-dot.ok { background: var(--ok); }
+    .cr-dot.missing { background: var(--missing); }
+    .cr-dot.issue { background: var(--issue); }
+
+    .cr-clause-text b { color: var(--text); }
+    .cr-clause-text span { color: var(--text-dim); font-size: 0.8rem; }
+
+    /* ─── Input Area ─── */
+    #input-area {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    #user-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: var(--text);
+      font-size: 0.92rem;
+      font-family: 'Cairo', sans-serif;
+      resize: none;
+      min-height: 48px;
+      max-height: 140px;
+      outline: none;
+      transition: border 0.2s;
+      line-height: 1.6;
+    }
+
+    #user-input:focus { border-color: var(--gold); }
+    #user-input::placeholder { color: var(--text-dim); }
+
+    #send-btn {
+      background: var(--gold);
+      color: #0b0d14;
+      border: none;
+      border-radius: 12px;
+      padding: 0 20px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      height: 48px;
+      font-family: 'Cairo', sans-serif;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    #send-btn:hover:not(:disabled) {
+      background: var(--gold-light);
+      transform: translateY(-1px);
+    }
+
+    #send-btn:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; }
+
+    #clear-btn, #upload-btn {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      height: 48px;
+      font-family: 'Cairo', sans-serif;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    #clear-btn:hover, #upload-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+    #upload-btn {
+      font-size: 1.1rem;
+      padding: 0 16px;
+      color: var(--gold);
+    }
+
+    #upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ─── About Modal ─── */
+    .about-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(6,7,12,0.72);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 24px;
+    }
+
+    .about-overlay.open {
+      display: flex;
+      animation: fadeUp 0.25s ease;
+    }
+
+    .about-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 86vh;
+      overflow-y: auto;
+      padding: 32px 34px;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .about-card::-webkit-scrollbar { width: 5px; }
+    .about-card::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .about-close {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .about-close:hover { color: var(--gold); border-color: var(--gold); }
+
+    .about-eyebrow {
+      color: var(--gold);
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .about-card h2 {
+      font-family: 'Amiri', serif;
+      font-size: 1.7rem;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .about-tagline {
+      color: var(--text-dim);
+      font-size: 0.88rem;
+      margin-bottom: 26px;
+      line-height: 1.7;
+    }
+
+    .about-section {
+      margin-bottom: 26px;
+    }
+
+    .about-section h3 {
+      font-size: 0.95rem;
+      color: var(--gold);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .about-module {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+
+    .about-module .mod-title {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .about-module p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    /* Pipeline flow */
+    .about-flow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .flow-step {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 0.78rem;
+      color: var(--text);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .flow-step.accent {
+      border-color: var(--gold);
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .flow-arrow {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    .flow-branch {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .about-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .about-chip {
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold);
+      padding: 5px 13px;
+      border-radius: 20px;
+      font-size: 0.76rem;
+    }
+
+    .about-footer-note {
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      font-size: 0.76rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 640px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .about-flow { flex-direction: column; align-items: stretch; }
+      .flow-arrow { transform: rotate(90deg); align-self: center; }
+    }
+
+    /* ─── Animations ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40%           { transform: translateY(-6px); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⚖️</div>
+  <div>
+    <h1>المساعد القانوني المصري</h1>
+    <p>مدعوم بالذكاء الاصطناعي — القانون المصري والعقود</p>
+  </div>
+  <div class="header-right">
+    <span class="badge-live"><span class="badge-dot"></span>متصل بالسيرفر</span>
+    <button id="about-btn" onclick="openAbout()">ℹ️ عن المشروع</button>
+  </div>
+</header>
+
+<div id="chat-box">
+  <div class="welcome" id="welcome">
+    <span class="welcome-icon">⚖️</span>
+    <h2>كيف يمكنني مساعدتك؟</h2>
+    <p>اسألني أي سؤال قانوني، أو ارفع عقد (PDF) وسأراجعه لك<br/>من نصوص القانون المصري مباشرةً</p>
+    <div class="suggestions">
+      <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي عقوبة السرقة؟</button>
+      <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي حقوق العامل؟</button>
+      <button class="suggestion-btn" onclick="askSuggestion(this)">شروط عقد الإيجار</button>
+      <button class="suggestion-btn" onclick="askSuggestion(this)">عقوبة القتل العمد</button>
+    </div>
+  </div>
+</div>
+
+<div id="input-area">
+  <button id="clear-btn" onclick="clearHistory()">🗑 محو</button>
+
+  <input type="file" id="file-input" accept="application/pdf" style="display:none" onchange="handleFileSelect(event)">
+  <button id="upload-btn" onclick="document.getElementById('file-input').click()" title="رفع عقد PDF">📎</button>
+
+  <textarea
+    id="user-input"
+    placeholder="اكتب سؤالك القانوني هنا، أو ارفع عقد لمراجعته..."
+    rows="1"
+    onkeydown="handleKey(event)"
+    oninput="autoResize(this)"
+  ></textarea>
+  <button id="send-btn" onclick="sendMessage()">إرسال ➤</button>
+</div>
+
+<div class="about-overlay" id="about-overlay" onclick="closeAboutOverlay(event)">
+  <div class="about-card">
+    <button class="about-close" onclick="closeAbout()">✕</button>
+
+    <div class="about-eyebrow">مشروع تخرج — علوم حاسب / نظم معلومات</div>
+    <h2>المساعد القانوني المصري</h2>
+    <p class="about-tagline">
+      نظام ذكاء اصطناعي بيجاوب على الأسئلة القانونية من نصوص القانون المصري مباشرةً،
+      وبيراجع عقود PDF المرفوعة ويطلع تقرير تفصيلي عن بنودها — من غير ما يخترع أي معلومة
+      مش موجودة في المصادر الرسمية.
+    </p>
+
+    <div class="about-section">
+      <h3>🧩 مكونات النظام</h3>
+      <div class="about-grid">
+        <div class="about-module">
+          <div class="mod-title">⚖️ الاستشارات القانونية (Legal RAG)</div>
+          <p>
+            بيرد على أي سؤال قانوني بالاعتماد على نصوص القانون المصري المخزّنة في قاعدة بيانات
+            متجهية (ChromaDB)، عن طريق بحث هجين (Hybrid: BM25 + Dense Retrieval) بيجيب أدق
+            المواد القانونية المرتبطة بالسؤال، وبيرجّع مصدر كل إجابة (اسم القانون ورقم الصفحة).
+          </p>
+        </div>
+        <div class="about-module">
+          <div class="mod-title">📄 مراجعة العقود (Contract Analysis)</div>
+          <p>
+            بيسمح برفع عقد PDF، بيصنّف نوعه (إيجار / بيع / عمل)، وبيقارنه ببنود مرجعية معرّفة
+            مسبقًا لكل نوع عقد، عشان يطلع تقرير بالبنود السليمة والناقصة واللي فيها مشكلة.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h3>🔀 مسار المعالجة</h3>
+      <div class="about-flow">
+        <div class="flow-step">سؤال / رفع عقد</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step accent">موجّه النية (Intent Router)</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-branch">
+          <div class="flow-step">مسار قانوني ← بحث في القانون</div>
+          <div class="flow-step">مسار عقد ← تصنيف النوع ← مطابقة البنود</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step accent">توليد الرد</div>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h3>🛠️ التقنيات المستخدمة</h3>
+      <div class="about-chips">
+        <span class="about-chip">FastAPI</span>
+        <span class="about-chip">LangChain</span>
+        <span class="about-chip">ChromaDB</span>
+        <span class="about-chip">Groq · Llama 3.1</span>
+        <span class="about-chip">multilingual-e5-base</span>
+        <span class="about-chip">Hybrid BM25 + Dense Retrieval</span>
+        <span class="about-chip">JSON Schema Validation</span>
+      </div>
+    </div>
+
+    <div class="about-footer-note">
+      المشروع بيهدف لتسهيل الوصول للمعلومة القانونية على المواطن العادي وبيوفر مراجعة أولية
+      سريعة للعقود — وهو أداة مساعدة ولا يغني عن استشارة محامٍ مختص.
+    </div>
+  </div>
+</div>
+
+<script>
+  const SESSION_ID = "session_" + Math.random().toString(36).substr(2, 9);
+  const API_URL = "http://127.0.0.1:8000";
+
+  const CLAUSE_LABELS = {
+    ok: "سليم",
+    missing: "ناقص",
+    issue: "فيه مشكلة"
+  };
+
+  function openAbout() {
+    document.getElementById("about-overlay").classList.add("open");
+  }
+
+  function closeAbout() {
+    document.getElementById("about-overlay").classList.remove("open");
+  }
+
+  function closeAboutOverlay(e) {
+    if (e.target.id === "about-overlay") closeAbout();
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeAbout();
+  });
+
+  function handleKey(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  function autoResize(el) {
+    el.style.height = "48px";
+    el.style.height = Math.min(el.scrollHeight, 140) + "px";
+  }
+
+  function removeWelcome() {
+    const w = document.getElementById("welcome");
+    if (w) w.remove();
+  }
+
+  function appendUserMessage(text) {
+    removeWelcome();
+    const chatBox = document.getElementById("chat-box");
+    const wrap = document.createElement("div");
+    wrap.className = "message-wrap user-wrap";
+    wrap.innerHTML = `
+      <span class="msg-label">أنت</span>
+      <div class="message user">${escapeHtml(text)}</div>
+    `;
+    chatBox.appendChild(wrap);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function appendUserFileMessage(filename) {
+    removeWelcome();
+    const chatBox = document.getElementById("chat-box");
+    const wrap = document.createElement("div");
+    wrap.className = "message-wrap user-wrap";
+    wrap.innerHTML = `
+      <span class="msg-label">أنت</span>
+      <div class="message user file-msg">📎 <span>${escapeHtml(filename)}</span></div>
+    `;
+    chatBox.appendChild(wrap);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function appendLoading(text) {
+    const chatBox = document.getElementById("chat-box");
+    const div = document.createElement("div");
+    div.className = "loading";
+    div.id = "loading-msg";
+    div.innerHTML = `
+      <div class="dots">
+        <span></span><span></span><span></span>
+      </div>
+      ${text || "جاري البحث في القانون المصري..."}
+    `;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return div;
+  }
+
+  function appendBotMessage(text, sources) {
+    const chatBox = document.getElementById("chat-box");
+
+    const wrap = document.createElement("div");
+    wrap.className = "message-wrap bot-wrap";
+
+    // الإجابة
+    const label = document.createElement("span");
+    label.className = "msg-label";
+    label.textContent = "المساعد القانوني";
+    wrap.appendChild(label);
+
+    const msgDiv = document.createElement("div");
+    msgDiv.className = "message bot";
+    msgDiv.textContent = text;
+    wrap.appendChild(msgDiv);
+
+    // السورسز
+    if (sources && sources.length > 0) {
+      const unique = [];
+      const seen = new Set();
+      for (const s of sources) {
+        const key = `${s.source}_${s.page}`;
+        if (!seen.has(key)) { seen.add(key); unique.push(s); }
+      }
+
+      const sourcesRow = document.createElement("div");
+      sourcesRow.className = "sources-row";
+
+      for (const s of unique) {
+        const btn = document.createElement("button");
+        btn.className = "source-btn";
+        btn.innerHTML = `📖 ${s.source} — ص${s.page}`;
+        btn.onclick = () => {
+          window.open(`${API_URL}/pdf/${encodeURIComponent(s.source)}#page=${s.page}`, "_blank");
+        };
+        sourcesRow.appendChild(btn);
+      }
+
+      wrap.appendChild(sourcesRow);
+    }
+
+    chatBox.appendChild(wrap);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function appendContractReport(answerText, validation) {
+    const chatBox = document.getElementById("chat-box");
+
+    const wrap = document.createElement("div");
+    wrap.className = "message-wrap bot-wrap";
+
+    const label = document.createElement("span");
+    label.className = "msg-label";
+    label.textContent = "مراجعة العقد";
+    wrap.appendChild(label);
+
+    // ملخص نصي طبيعي
+    const msgDiv = document.createElement("div");
+    msgDiv.className = "message bot";
+    msgDiv.textContent = answerText;
+    wrap.appendChild(msgDiv);
+
+    // تقرير تفصيلي لو موجود
+    if (validation && validation.clauses) {
+      const report = document.createElement("div");
+      report.className = "contract-report";
+
+      const summary = validation.summary || {};
+      report.innerHTML = `
+        <div class="cr-header">📋 تقرير مراجعة العقد (${validation.contract_type || ""})</div>
+        <div class="cr-summary">
+          <span class="cr-pill ok">${summary.ok || 0} سليم</span>
+          <span class="cr-pill missing">${summary.missing || 0} ناقص</span>
+          <span class="cr-pill issue">${summary.issue || 0} فيه مشكلة</span>
+        </div>
+      `;
+
+      const clausesWrap = document.createElement("div");
+      for (const clause of validation.clauses) {
+        const row = document.createElement("div");
+        row.className = "cr-clause";
+        row.innerHTML = `
+          <span class="cr-dot ${clause.status}"></span>
+          <span class="cr-clause-text">
+            <b>${escapeHtml(clause.title)}</b> — ${CLAUSE_LABELS[clause.status] || clause.status}
+            ${clause.reason ? `<br><span>${escapeHtml(clause.reason)}</span>` : ""}
+          </span>
+        `;
+        clausesWrap.appendChild(row);
+      }
+      report.appendChild(clausesWrap);
+      wrap.appendChild(report);
+    }
+
+    chatBox.appendChild(wrap);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById("user-input");
+    const btn   = document.getElementById("send-btn");
+    const query = input.value.trim();
+    if (!query) return;
+
+    input.value = "";
+    input.style.height = "48px";
+    btn.disabled = true;
+
+    appendUserMessage(query);
+    appendLoading("جاري البحث في القانون المصري...");
+
+    try {
+      const res = await fetch(`${API_URL}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: SESSION_ID, message: query })
+      });
+
+      const data = await res.json();
+      document.getElementById("loading-msg")?.remove();
+
+      renderResponse(data);
+
+    } catch (err) {
+      document.getElementById("loading-msg")?.remove();
+      appendBotMessage("❌ حدث خطأ في الاتصال بالسيرفر. تأكد أن الـ backend شغال.", []);
+    }
+
+    btn.disabled = false;
+    input.focus();
+  }
+
+  async function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    event.target.value = ""; // يسمح باختيار نفس الملف تاني لو حابب
+
+    const uploadBtn = document.getElementById("upload-btn");
+    uploadBtn.disabled = true;
+
+    appendUserFileMessage(file.name);
+    appendLoading("جاري تحليل العقد...");
+
+    const formData = new FormData();
+    formData.append("session_id", SESSION_ID);
+    formData.append("file", file);
+
+    try {
+      const res = await fetch(`${API_URL}/contract/upload`, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      document.getElementById("loading-msg")?.remove();
+
+      renderResponse(data);
+
+    } catch (err) {
+      document.getElementById("loading-msg")?.remove();
+      appendBotMessage("❌ حدث خطأ في رفع أو تحليل العقد.", []);
+    }
+
+    uploadBtn.disabled = false;
+  }
+
+  function renderResponse(data) {
+    const flow = data.flow || "legal";
+
+    if (flow.startsWith("contract")) {
+      const validation = data.extra ? data.extra.validation : null;
+      appendContractReport(data.answer, validation);
+    } else {
+      appendBotMessage(data.answer, data.sources || []);
+    }
+  }
+
+  function askSuggestion(btn) {
+    document.getElementById("user-input").value = btn.textContent;
+    sendMessage();
+  }
+
+  async function clearHistory() {
+    await fetch(`${API_URL}/chat/${SESSION_ID}`, { method: "DELETE" });
+    const chatBox = document.getElementById("chat-box");
+    chatBox.innerHTML = `
+      <div class="welcome" id="welcome">
+        <span class="welcome-icon">⚖️</span>
+        <h2>كيف يمكنني مساعدتك؟</h2>
+        <p>اسألني أي سؤال قانوني، أو ارفع عقد (PDF) وسأراجعه لك<br/>من نصوص القانون المصري مباشرةً</p>
+        <div class="suggestions">
+          <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي عقوبة السرقة؟</button>
+          <button class="suggestion-btn" onclick="askSuggestion(this)">ما هي حقوق العامل؟</button>
+          <button class="suggestion-btn" onclick="askSuggestion(this)">شروط عقد الإيجار</button>
+          <button class="suggestion-btn" onclick="askSuggestion(this)">عقوبة القتل العمد</button>
+        </div>
+      </div>`;
+  }
+
+  function escapeHtml(text) {
+    return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+</script>
+
+</body>
+</html>
