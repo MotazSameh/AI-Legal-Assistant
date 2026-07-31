@@ -110,8 +110,8 @@ chroma_db/       # Persisted vector store
 ### Installation
 
 ```bash
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>/backend
+git clone https://github.com/MotazSameh/Final-AI-Legal-Assistant.git
+cd Final-AI-Legal-Assistant/backend
 
 python -m venv venv
 source venv/bin/activate      # Windows: venv\Scripts\activate
@@ -132,7 +132,7 @@ GROQ_API_KEY=your_groq_api_key_here
 ```bash
 python build_contract_chunks.py
 python build_template_embeddings.py
-# plus your legal-text chunking/embedding scripts
+
 ```
 
 ### Run the API
