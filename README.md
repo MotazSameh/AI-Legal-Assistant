@@ -1,6 +1,6 @@
 # ⚖️ Egyptian Legal Assistant
 
-**An Arabic-first AI assistant that answers Egyptian legal questions and reviews uploaded contracts — grounded strictly in real legal sources and the contract's own text, with zero invented information.**
+**An Arabic AI assistant that answers Egyptian legal questions and reviews uploaded contracts — grounded strictly in real legal sources and the contract's own text, with zero invented information.**
 
 <p align="center">
   <img alt="Python" src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white">
@@ -110,8 +110,8 @@ chroma_db/       # Persisted vector store
 ### Installation
 
 ```bash
-git clone https://github.com/MotazSameh/Final-AI-Legal-Assistant.git
-cd Final-AI-Legal-Assistant/backend
+git clone https://github.com/MotazSameh/AI-Legal-Assistant.git
+cd AI-Legal-Assistant/backend
 
 python -m venv venv
 source venv/bin/activate      # Windows: venv\Scripts\activate
