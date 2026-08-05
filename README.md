@@ -101,6 +101,14 @@ chroma_db/       # Persisted vector store
 
 ---
 
+
+## 🎥 Project Demo
+
+Watch the demo here:
+[https://drive.google.com/...](https://drive.google.com/drive/folders/1vuTS0vzdE6EL482LBOkR-WgCxn6W2BrD?usp=sharing)
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
